@@ -1,0 +1,38 @@
+@import "./mixins.scss";
+.body {
+  width: 100%;
+  min-height: 100vh;
+}
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.flex {
+  display: flex;
+}
+.center {
+  justify-content: center;
+  align-items: center;
+}
+.jc-c {
+  justify-content: center;
+}
+.ai-c {
+  align-items: center;
+}
+.fd-r {
+  flex-direction: row;
+}
+.fd-c {
+  flex-direction: column;
+}
+.padding {
+  padding: 0 16px;
+}
+
+@include breakpoint-up(medium) {
+  .mobile {
+    display: none;
+  }
+}
