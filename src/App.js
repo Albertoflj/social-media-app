@@ -6,6 +6,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
 import "./main-styles/main.scss";
+import MainPage from "./pages/main-page/MainPage";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -60,7 +61,7 @@ function App() {
         </button>
       )} */}
         <Routes>
-          <Route path="/" element={<Header />} />
+          <Route path="/" element={<MainPage />} />
         </Routes>
       </div>
     </HashRouter>

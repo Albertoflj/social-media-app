@@ -44,6 +44,16 @@ button {
 .desktop {
   display: none;
 }
+input[type="text"] {
+  text-align: center;
+  box-shadow: none;
+  //!! TODO: Change to color from figma
+  border: 1px black solid;
+}
+input[type="text"]:focus {
+  border: none;
+  box-shadow: none;
+}
 @include breakpoint-up(medium) {
   .mobile {
     display: none;
