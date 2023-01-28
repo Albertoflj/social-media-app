@@ -1,17 +1,23 @@
-@import "../../main-styles/mixins.scss";
 .header {
   box-sizing: border-box;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.014);
   .header-content {
     justify-content: space-between;
+    align-items: center;
     width: 100%;
   }
   height: 50px;
-}
-.mobile {
-  display: block;
-}
-@include breakpoint-up(medium) {
-  .mobile {
-    display: none;
+  .header-right-buttons {
+    max-width: 242px;
+    width: 100%;
+    justify-content: space-around;
+    button {
+      width: 28px;
+      height: 28px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }

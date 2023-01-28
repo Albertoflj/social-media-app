@@ -30,9 +30,25 @@ button {
 .padding {
   padding: 0 16px;
 }
-
+.profile-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #9e9e9e;
+}
+.desktop {
+  display: none;
+}
 @include breakpoint-up(medium) {
   .mobile {
     display: none;
+  }
+  .desktop {
+    display: flex;
   }
 }
