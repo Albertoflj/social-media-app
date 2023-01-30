@@ -1,6 +1,12 @@
 import firebase from "firebase/compat/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, updateDoc } from "firebase/firestore";
+import {
+  getDocs,
+  getFirestore,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -21,24 +27,19 @@ const db = getFirestore(app);
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
-      const usersRef = doc(db, "users", result.user.uid);
-      const userFollowingRef = doc(
-        db,
-        "users",
-        result.user.uid,
-        "following",
-        "QahgWcwga4edVwhtJUBsqmDTMlQ2"
-      );
-      getDoc(usersRef).then((docs) => {
+      const userRef = doc(db, "users", result.user.uid);
+
+      getDoc(userRef).then((docs) => {
         if (!docs.data()) {
-          setDoc(usersRef, {
+          setDoc(userRef, {
             displayName: result.user.displayName,
             email: result.user.email,
             photoURL: result.user.photoURL,
             uid: result.user.uid,
-            description: "Hi! I'm new here.",
+            bio: "Hi! I'm new here.",
+            followers: [],
+            following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2"],
           });
-          setDoc(userFollowingRef, {});
         }
       });
     })
@@ -49,6 +50,15 @@ export const signInWithGoogle = () => {
 
 export const signOut = () => {
   auth.signOut();
+};
+export const checkIfUsernameExists = (username) => {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("username", "==", username));
+  getDocs(q).then((data) => {
+    data.forEach((doc) => {
+      return doc.data().length >= 1;
+    });
+  });
 };
 
 export default app;
