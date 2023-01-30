@@ -75,7 +75,13 @@ const NavButtons = (props) => {
           </button>
         </>
       )}
-      <Link to="/myprofile" className="profile-button">
+      <Link
+        to={user ? "/myprofile" : location.pathname}
+        className="profile-button"
+        onClick={() => {
+          checkIfUserIsLoggedIn();
+        }}
+      >
         {user ? (
           <img
             src={user.photoURL}
