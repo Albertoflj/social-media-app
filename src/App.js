@@ -4,7 +4,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "firebase/compat/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
 import "./main-styles/main.scss";
 import MainPage from "./pages/main-page/MainPage";
 
@@ -62,6 +61,8 @@ function App() {
       )} */}
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/messages" element={<MainPage />} />
+          <Route path="/myprofile" element={<MainPage />} />
         </Routes>
       </div>
     </HashRouter>
