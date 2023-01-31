@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { auth, signInWithGoogle, signOut } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
+import UsernamePrompt from "../UsernamePrompt/UsernamePrompt";
+import { checkIfUserHasUsername } from "../../firebase";
 
 const NavButtons = (props) => {
   const [homeIcon, setHomeIcon] = useState(homeIconOutline);
@@ -92,6 +94,13 @@ const NavButtons = (props) => {
           <img src={userNotLoggedInIcon} alt="user-icon" />
         )}
       </Link>
+      {/* <UsernamePrompt /> */}
+      {
+        //if user is logged in, check if they have a username, if not, prompt them to create one
+        // user && checkIfUserHasUsername(user.uid) === false ? (
+        //   <UsernamePrompt />
+        // ) : null
+      }
     </div>
   );
 };

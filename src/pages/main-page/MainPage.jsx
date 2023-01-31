@@ -7,7 +7,7 @@ const MainPage = () => {
   return (
     <>
       <Header />
-      <UsernamePrompt />
+
       <Footer />
     </>
   );

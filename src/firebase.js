@@ -24,7 +24,7 @@ const app = firebase.initializeApp({
 export const auth = getAuth(app);
 const db = getFirestore(app);
 
-export const signInWithGoogle = () => {
+export const signInWithGoogle = async () => {
   signInWithPopup(auth, provider)
     .then((result) => {
       const userRef = doc(db, "users", result.user.uid);
@@ -39,6 +39,7 @@ export const signInWithGoogle = () => {
             bio: "Hi! I'm new here.",
             followers: [],
             following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2"],
+            username: null,
           });
         }
       });
@@ -56,8 +57,25 @@ export const checkIfUsernameExists = (username) => {
   const q = query(usersRef, where("username", "==", username));
   getDocs(q).then((data) => {
     data.forEach((doc) => {
-      return doc.data().length >= 1;
+      return true;
     });
+  });
+};
+
+export const checkIfUserHasUsername = (uid) => {
+  const userRef = doc(db, "users", uid);
+  getDoc(userRef).then((res) => {
+    if (res.data().username != null) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+};
+export const writeUsername = async (username) => {
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  await updateDoc(userRef, {
+    username: username,
   });
 };
 
