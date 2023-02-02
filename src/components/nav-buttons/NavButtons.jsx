@@ -10,6 +10,7 @@ import { useLocation } from "react-router";
 import "./nav-buttons.scss";
 import { Link } from "react-router-dom";
 
+import { useSelector } from "react-redux";
 import { auth, signInWithGoogle, signOut } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
@@ -19,7 +20,14 @@ import { checkIfUserHasUsername } from "../../firebase";
 const NavButtons = (props) => {
   const [homeIcon, setHomeIcon] = useState(homeIconOutline);
   const [chatIcon, setChatIcon] = useState(chatIconOutline);
+  const [username, setUsername] = useState("");
   const location = useLocation();
+  const [user, setUser] = useAuthState(auth);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [user]);
   useEffect(() => {
     switch (location.pathname) {
       case "/":
@@ -31,19 +39,25 @@ const NavButtons = (props) => {
         setHomeIcon(homeIconOutline);
         break;
     }
-  }, [location.pathname]);
+  }, [location.pathname, username]);
 
   //TODO this is a temporary solution, if user is logged in, prompt to post, if not, prompt to sign in
   const checkIfUserIsLoggedIn = () => {
     if (user) {
       signOut();
+      console.log(user.photoURL);
     } else {
-      signInWithGoogle();
+      signInWithGoogle((resultUsername) => {
+        setUsername(resultUsername);
+        console.log(username);
+      });
     }
   };
-  const [user] = useAuthState(auth);
+
   //   user ? console.log(user.photoURL) : console.log("user is not logged in");
-  return (
+  return loading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="nav-buttons flex">
       {props.for === "header" ? (
         <>
@@ -89,18 +103,12 @@ const NavButtons = (props) => {
             src={user.photoURL}
             alt="profile-photo"
             className="profile-photo"
+            // referrerPolicy="no-referrer"
           />
         ) : (
           <img src={userNotLoggedInIcon} alt="user-icon" />
         )}
       </Link>
-      {/* <UsernamePrompt /> */}
-      {
-        //if user is logged in, check if they have a username, if not, prompt them to create one
-        // user && checkIfUserHasUsername(user.uid) === false ? (
-        //   <UsernamePrompt />
-        // ) : null
-      }
     </div>
   );
 };

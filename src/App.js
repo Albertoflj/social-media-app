@@ -7,6 +7,9 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import "./main-styles/main.scss";
 import MainPage from "./pages/main-page/MainPage";
+import { getUserData } from "./firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setUsername } from "./redux/userSlice";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -37,7 +40,16 @@ export const signOut = () => {
 };
 
 function App() {
+  const dispatch = useDispatch();
   const [user] = useAuthState(auth);
+  const username = useSelector((state) => state.user.username);
+  if (user) {
+    getUserData(user.uid).then((data) => {
+      if (data && data.username) {
+        dispatch(setUsername(data.username));
+      }
+    });
+  }
   return (
     <HashRouter>
       <div className="App">

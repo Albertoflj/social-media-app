@@ -24,7 +24,7 @@ const app = firebase.initializeApp({
 export const auth = getAuth(app);
 const db = getFirestore(app);
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (callback) => {
   signInWithPopup(auth, provider)
     .then((result) => {
       const userRef = doc(db, "users", result.user.uid);
@@ -42,6 +42,9 @@ export const signInWithGoogle = async () => {
             username: null,
           });
         }
+        getDoc(userRef).then((res) => {
+          callback(res.data().username);
+        });
       });
     })
     .catch((error) => {
@@ -52,14 +55,19 @@ export const signInWithGoogle = async () => {
 export const signOut = () => {
   auth.signOut();
 };
-export const checkIfUsernameExists = (username) => {
+
+export const checkIfUsernameExists = async (username) => {
   const usersRef = collection(db, "users");
   const q = query(usersRef, where("username", "==", username));
-  getDocs(q).then((data) => {
-    data.forEach((doc) => {
-      return true;
-    });
+  const data = await getDocs(q);
+  let usernameExists = false;
+  data.forEach((doc) => {
+    if (doc) {
+      usernameExists = true;
+      return;
+    }
   });
+  return usernameExists;
 };
 
 export const checkIfUserHasUsername = (uid) => {
@@ -77,6 +85,14 @@ export const writeUsername = async (username) => {
   await updateDoc(userRef, {
     username: username,
   });
+};
+
+export const getUserData = async (uid) => {
+  const userRef = doc(db, "users", uid);
+  const docSnap = await getDoc(userRef);
+  if (docSnap.exists()) {
+    return docSnap.data();
+  }
 };
 
 export default app;

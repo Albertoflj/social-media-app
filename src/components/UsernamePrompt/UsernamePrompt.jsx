@@ -2,16 +2,20 @@ import React from "react";
 import "./usernameprompt.scss";
 import { useState } from "react";
 import { checkIfUsernameExists, writeUsername } from "../../firebase";
-const UsernamePrompt = () => {
+import { useDispatch } from "react-redux";
+import { setUsername } from "../../redux/userSlice";
+const UsernamePrompt = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
+
   const checkforUsername = async (username) => {
     const result = await checkIfUsernameExists(username);
+    return result;
     // do something else here after firstFunction completes
   };
+  let dispatch = useDispatch();
   const handleUsernameSubmission = (e) => {
     e.preventDefault();
     const username = e.target[0].value.toLowerCase();
-    const doesUsernameExist = checkforUsername(username);
     const regex = /^[a-zA-Z0-9_.]*$/;
     const minLength = 4;
     const maxLength = 12;
@@ -20,7 +24,6 @@ const UsernamePrompt = () => {
     checkforUsername(username).then((result) => {
       if (result) {
         error = "Username already exists";
-        console.log(result);
       }
       if (!regex.test(username)) {
         error = "Username can only contain letters, numbers, and _";
@@ -35,6 +38,7 @@ const UsernamePrompt = () => {
         setErrorMessage(error);
       } else {
         writeUsername(username);
+        dispatch(setUsername(username));
       }
     });
   };
