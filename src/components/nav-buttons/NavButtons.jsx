@@ -22,12 +22,6 @@ const NavButtons = (props) => {
   const [chatIcon, setChatIcon] = useState(chatIconOutline);
   const [username, setUsername] = useState("");
   const location = useLocation();
-  const [user, setUser] = useAuthState(auth);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, [user]);
   useEffect(() => {
     switch (location.pathname) {
       case "/":
@@ -53,11 +47,14 @@ const NavButtons = (props) => {
       });
     }
   };
+  const [user] = useAuthState(auth);
+  const reduxUsername = useSelector((state) => state.user.username);
+  const reduxFinishedFetching = useSelector(
+    (state) => state.user.finishedFetching
+  );
 
   //   user ? console.log(user.photoURL) : console.log("user is not logged in");
-  return loading ? (
-    <div>Loading...</div>
-  ) : (
+  return (
     <div className="nav-buttons flex">
       {props.for === "header" ? (
         <>
@@ -109,6 +106,14 @@ const NavButtons = (props) => {
           <img src={userNotLoggedInIcon} alt="user-icon" />
         )}
       </Link>
+      {/* <UsernamePrompt /> */}
+      {
+        //if user is logged in, check if they have a username, if not, prompt them to create one
+        user && !reduxUsername && reduxFinishedFetching ? (
+          <UsernamePrompt username={reduxUsername} />
+        ) : null
+        // <UsernamePrompt username={reduxUsername} ff={reduxFinishedFetching} />
+      }
     </div>
   );
 };

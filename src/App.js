@@ -9,7 +9,7 @@ import "./main-styles/main.scss";
 import MainPage from "./pages/main-page/MainPage";
 import { getUserData } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser, setUsername } from "./redux/userSlice";
+import { setUser, setUsername, setFinishedFetching } from "./redux/userSlice";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -48,6 +48,7 @@ function App() {
       if (data && data.username) {
         dispatch(setUsername(data.username));
       }
+      dispatch(setFinishedFetching(true));
     });
   }
   return (

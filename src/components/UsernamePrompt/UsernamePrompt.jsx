@@ -10,7 +10,6 @@ const UsernamePrompt = (props) => {
   const checkforUsername = async (username) => {
     const result = await checkIfUsernameExists(username);
     return result;
-    // do something else here after firstFunction completes
   };
   let dispatch = useDispatch();
   const handleUsernameSubmission = (e) => {
@@ -20,7 +19,6 @@ const UsernamePrompt = (props) => {
     const minLength = 4;
     const maxLength = 12;
     let error = "";
-
     checkforUsername(username).then((result) => {
       if (result) {
         error = "Username already exists";
