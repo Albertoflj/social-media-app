@@ -50,6 +50,8 @@ function App() {
       }
       dispatch(setFinishedFetching(true));
     });
+  } else {
+    dispatch(setFinishedFetching(true));
   }
   return (
     <HashRouter>
