@@ -24,6 +24,7 @@ const app = firebase.initializeApp({
 export const auth = getAuth(app);
 const db = getFirestore(app);
 
+//--------------------FOR USERS--------------------
 export const signInWithGoogle = async (callback) => {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -94,5 +95,83 @@ export const getUserData = async (uid) => {
     return docSnap.data();
   }
 };
+
+//--------------------FOR POSTS--------------------
+
+//post object
+
+// let post = {
+//   user: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
+//   caption: "This is a test post",
+//   photoURL: "https://picsum.photos/200",
+//   likes: [],
+//   comments: {
+//     0: {
+//       author: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
+//       comment: "This is a test comment",
+//     },
+//   },
+// };
+
+export const getFollowingPosts = async (userId, callback) => {
+  const postsCollectionRef = collection(db, "posts");
+  const userDocRef = doc(db, "users", userId);
+  const usersCollectionRef = collection(db, "users");
+
+  let posts = [];
+  let post = {};
+  // get the document of the user with the provided userId
+  getDoc(userDocRef).then((userDoc) => {
+    const followingUsers = userDoc.data().following;
+    followingUsers.forEach((followingUser) => {
+      // get all the users that the current user is following
+      const followingUserQuery = query(
+        usersCollectionRef,
+        where("uid", "==", followingUser)
+      );
+      getDocs(followingUserQuery).then((followingUserDocs) => {
+        followingUserDocs.forEach((followingUserDoc) => {
+          let followingUserPosts = followingUserDoc.data().userPosts;
+          followingUserPosts.forEach((postId) => {
+            const postDocRef = doc(db, "posts", postId);
+            const postCommentsCollectionRef = collection(
+              db,
+              "posts",
+              postId,
+              "comments"
+            );
+
+            // get the document of the post with the postId
+            getDoc(postDocRef).then((postDoc) => {
+              // console.log(postDoc.data());
+              post = postDoc.data();
+              post.comments = {};
+            });
+
+            // get all the comments of the post with the postId
+            getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
+              let commentCounter = 0;
+              postCommentDocs.forEach((postCommentDoc) => {
+                post.comments[commentCounter] = postCommentDoc.data();
+                commentCounter++;
+              });
+              posts.push(post);
+              post = {};
+
+              if (
+                postId === followingUserPosts[followingUserPosts.length - 1]
+              ) {
+                console.log(posts);
+                callback(posts);
+              }
+            });
+          });
+        });
+      });
+    });
+  });
+};
+
+// const q = query(followingPostsRef, where("username", "==", username));
 
 export default app;

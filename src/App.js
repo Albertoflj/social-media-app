@@ -22,8 +22,6 @@ const app = firebase.initializeApp({
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 });
 
-export const auth = getAuth(app);
-
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -38,6 +36,7 @@ export const signInWithGoogle = () => {
 export const signOut = () => {
   auth.signOut();
 };
+export const auth = getAuth(app);
 
 function App() {
   const dispatch = useDispatch();

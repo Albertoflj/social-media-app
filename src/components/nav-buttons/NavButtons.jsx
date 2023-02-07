@@ -39,7 +39,6 @@ const NavButtons = (props) => {
   const checkIfUserIsLoggedIn = () => {
     if (user) {
       signOut();
-      console.log(user.photoURL);
     } else {
       signInWithGoogle((resultUsername) => {
         setUsername(resultUsername);
@@ -69,7 +68,13 @@ const NavButtons = (props) => {
           <Link to="/" className="home-button">
             <img src={homeIcon} alt="home-icon" />
           </Link>
-          <Link to="/messages" className="messages-button">
+          <Link
+            to={user ? "/messages" : location.pathname}
+            className="messages-button"
+            onClick={() => {
+              checkIfUserIsLoggedIn();
+            }}
+          >
             <img src={chatIcon} alt="chatIcon" />
           </Link>
         </>
@@ -109,9 +114,9 @@ const NavButtons = (props) => {
       {/* <UsernamePrompt /> */}
       {
         //if user is logged in, check if they have a username, if not, prompt them to create one
-        user && !reduxUsername && reduxFinishedFetching ? (
-          <UsernamePrompt username={reduxUsername} />
-        ) : null
+        // user && !reduxUsername && reduxFinishedFetching ? (
+        //   <UsernamePrompt username={reduxUsername} />
+        // ) : null
         // <UsernamePrompt username={reduxUsername} ff={reduxFinishedFetching} />
       }
     </div>
