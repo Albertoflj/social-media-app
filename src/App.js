@@ -10,6 +10,7 @@ import MainPage from "./pages/main-page/MainPage";
 import { getUserData } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setUsername, setFinishedFetching } from "./redux/userSlice";
+import Post from "./components/Posts/Post";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -77,9 +78,11 @@ function App() {
         </button>
       )} */}
         <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/messages" element={<MainPage />} />
-          <Route path="/myprofile" element={<MainPage />} />
+          <Route exact path="/" element={<MainPage />} />
+          <Route exact path="/messages" element={<MainPage />} />
+          <Route exact path="/myprofile" element={<MainPage />} />
+          <Route exact path="/post/:postid" element={<Post />} />
+          <Route exact path="/user/:userid" element={<MainPage />} />
         </Routes>
       </div>
     </HashRouter>

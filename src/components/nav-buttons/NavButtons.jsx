@@ -94,7 +94,7 @@ const NavButtons = (props) => {
         </>
       )}
       <Link
-        to={user ? "/myprofile" : location.pathname}
+        to={user ? `/user/${username}` : location.pathname}
         className="profile-button"
         onClick={() => {
           checkIfUserIsLoggedIn();

@@ -120,11 +120,13 @@ export const getFollowingPosts = async (userId, callback) => {
 
   let posts = [];
   let post = {};
-  // get the document of the user with the provided userId
+  let usersData = {};
   getDoc(userDocRef).then((userDoc) => {
     const followingUsers = userDoc.data().following;
     followingUsers.forEach((followingUser) => {
-      // get all the users that the current user is following
+      getUserData(followingUser).then((user) => {
+        usersData = user;
+      });
       const followingUserQuery = query(
         usersCollectionRef,
         where("uid", "==", followingUser)
@@ -133,42 +135,181 @@ export const getFollowingPosts = async (userId, callback) => {
         followingUserDocs.forEach((followingUserDoc) => {
           let followingUserPosts = followingUserDoc.data().userPosts;
           followingUserPosts.forEach((postId) => {
-            const postDocRef = doc(db, "posts", postId);
-            const postCommentsCollectionRef = collection(
-              db,
-              "posts",
-              postId,
-              "comments"
-            );
-
-            // get the document of the post with the postId
-            getDoc(postDocRef).then((postDoc) => {
-              // console.log(postDoc.data());
-              post = postDoc.data();
-              post.comments = {};
-            });
-
-            // get all the comments of the post with the postId
-            getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
-              let commentCounter = 0;
-              postCommentDocs.forEach((postCommentDoc) => {
-                post.comments[commentCounter] = postCommentDoc.data();
-                commentCounter++;
-              });
+            getPost(postId, usersData, (post) => {
               posts.push(post);
-              post = {};
-
               if (
                 postId === followingUserPosts[followingUserPosts.length - 1]
               ) {
                 console.log(posts);
                 callback(posts);
+                usersData = {};
               }
             });
           });
         });
       });
     });
+  });
+};
+
+//   // Create a reference to the "posts" collection in the database
+//   const postsCollectionRef = collection(db, "posts");
+
+//   // Create a reference to the document with id "userId" in the "users" collection
+//   const userDocRef = doc(db, "users", userId);
+
+//   // Create a reference to the "users" collection in the database
+//   const usersCollectionRef = collection(db, "users");
+
+//   // Create an empty array to store posts
+//   let posts = [];
+
+//   // Create an object to store a single post
+//   let post = {};
+
+//   // Create an object to store the data of the users
+//   let usersData = {};
+
+//   // Get the document with id "userId" from the "users" collection
+//   getDoc(userDocRef).then((userDoc) => {
+//     // Get the list of users that the current user is following
+//     const followingUsers = userDoc.data().following;
+
+//     // Loop through each following user
+//     followingUsers.forEach((followingUser) => {
+//       // Get the data of the following user
+//       getUserData(followingUser).then((user) => {
+//         // Store the data of the following user
+//         usersData = user;
+//       });
+
+//       // Create a query to get the document of the following user from the "users" collection
+//       const followingUserQuery = query(
+//         usersCollectionRef,
+//         where("uid", "==", followingUser)
+//       );
+
+//       // Get the document of the following user from the "users" collection
+//       getDocs(followingUserQuery).then((followingUserDocs) => {
+//         // Loop through each document of the following user
+//         followingUserDocs.forEach((followingUserDoc) => {
+//           // Get the list of posts by the following user
+//           let followingUserPosts = followingUserDoc.data().userPosts;
+
+//           // Loop through each post by the following user
+//           followingUserPosts.forEach((postId) => {
+//             // Create a reference to the post with id "postId" in the "posts" collection
+//             const postDocRef = doc(db, "posts", postId);
+//             let PID = postId;
+
+//             // Create a reference to the "comments" sub-collection of the post with id "postId"
+//             const postCommentsCollectionRef = collection(
+//               db,
+//               "posts",
+//               postId,
+//               "comments"
+//             );
+
+//             // Get the data of the post with id "postId"
+//             getDoc(postDocRef).then((postDoc) => {
+//               // Store the data of the post
+//               post = postDoc.data();
+
+//               // Initialize the "comments" field for the post
+//               post.comments = {};
+
+//               // Store the data of the creator of the post
+//               post.creator = usersData;
+
+//               // Store the id of the post
+//               post.id = PID;
+//             });
+
+//             getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
+//               //Iterate over each comment document in the collection
+//               let commentCounter = 0;
+//               postCommentDocs.forEach((postCommentDoc) => {
+//                 //Add the comment data to the post object using the commentCounter as the key
+//                 post.comments[commentCounter] = postCommentDoc.data();
+//                 commentCounter++;
+//               });
+//               //Push the post object to the posts array
+//               posts.push(post);
+//               //Reset the post object
+//               post = {};
+
+//               //Check if this is the last post from the current following user
+//             });
+//             if (postId === followingUserPosts[followingUserPosts.length - 1]) {
+//               //Log the posts array
+//               console.log(posts);
+//               //Call the callback function with the posts array as the argument
+//               callback(posts);
+//               //Reset the usersData object
+//               usersData = {};
+//             }
+//           });
+//         });
+//       });
+//     });
+//   });
+// };
+
+export const getPost = (postId, user, callback) => {
+  // Create an object to store a single post
+  let post = {};
+  //get creator data
+  let usersData = {};
+  if (user) {
+    usersData = user;
+  }
+
+  // Create a reference to the post with id "postId" in the "posts" collection
+  const postDocRef = doc(db, "posts", postId);
+  let PID = postId;
+
+  // Create a reference to the "comments" sub-collection of the post with id "postId"
+  const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
+
+  // Get the data of the post with id "postId"
+  getDoc(postDocRef).then((postDoc) => {
+    // Store the data of the post
+    post = postDoc.data();
+
+    // Initialize the "comments" field for the post
+    post.comments = {};
+
+    // Store the id of the post
+    post.id = PID;
+
+    // Store the data of the creator of the post
+    if (user) {
+      post.creator = usersData;
+      getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
+        //Iterate over each comment document in the collection
+        let commentCounter = 0;
+        postCommentDocs.forEach((postCommentDoc) => {
+          //Add the comment data to the comment object using the commentCounter as the key
+          post.comments[commentCounter] = postCommentDoc.data();
+          commentCounter++;
+        });
+        callback(post);
+      });
+    } else {
+      getUserData(post.user).then((postCreator) => {
+        post.creator = postCreator;
+        getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
+          //Iterate over each comment document in the collection
+          let commentCounter = 0;
+          postCommentDocs.forEach((postCommentDoc) => {
+            //Add the comment data to the post object using the commentCounter as the key
+            post.comments[commentCounter] = postCommentDoc.data();
+            commentCounter++;
+          });
+          callback(post);
+        });
+      });
+    }
   });
 };
 

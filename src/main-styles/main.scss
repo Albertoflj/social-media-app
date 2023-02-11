@@ -3,6 +3,8 @@
 // variables
 
 $black: 202020;
+//set opacity of this color to 75
+$black75: rgba(32, 32, 32, 0.75);
 
 .body {
   width: 100%;
@@ -32,6 +34,9 @@ button {
 .fd-c {
   flex-direction: column;
 }
+.jc-fs {
+  justify-content: flex-start;
+}
 .padding {
   padding: 0 16px;
 }
@@ -51,8 +56,17 @@ button {
 }
 a {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  text-decoration: none;
+  width: fit-content;
+  color: inherit;
+}
+a {
+}
+a:visited {
+  text-decoration: none;
+  color: inherit;
 }
 input[type="text"] {
   text-align: center;
@@ -65,6 +79,7 @@ input[type="text"]:focus {
   box-shadow: none;
   // outline: black;
 }
+
 @include breakpoint-up(medium) {
   .mobile {
     display: none;
