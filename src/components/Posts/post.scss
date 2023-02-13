@@ -4,75 +4,75 @@
   min-height: 100vh;
   padding-top: 20px;
   padding-bottom: 40px;
-  .post {
-    width: 100%;
-    padding-top: 30px;
-    max-width: 700px;
-    box-sizing: border-box;
-    .user-details {
-      margin-bottom: 8px;
-      margin-top: 8px;
-      width: fit-content;
-
-      h5 {
-        margin: 0;
-      }
-      img {
-        width: 32px;
-        height: 32px;
-        border-radius: 50px;
-      }
-      .name-username {
-        .username {
-          font-family: "JUST sans";
-          color: f.$black75;
-        }
-        margin-left: 8px;
-      }
-    }
-    .post-photo {
-      width: 100%;
-      max-height: 600px;
-    }
-    .caption-content {
-      p {
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-    }
-    .interact-buttons {
-      margin: 8px 0px;
-      gap: 10px;
-      img {
-        position: block;
-        top: 0;
-      }
-      button {
-        height: 24px;
-        width: 24px;
-        padding: 0;
-      }
-    }
-  }
-  .view-comments {
-    margin: 8px 0;
-    color: f.$black75;
-  }
-  .comment {
-    p {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-  }
-  .caption-author {
-    font-weight: bold;
-  }
-  .caption-text {
-    margin-left: 8px;
-  }
 }
 
 .icon {
   width: 24px;
   height: 24px;
+}
+.post {
+  width: 100%;
+  padding-top: 30px;
+  max-width: 700px;
+  box-sizing: border-box;
+  .user-details {
+    margin-bottom: 8px;
+    margin-top: 8px;
+    width: fit-content;
+
+    h5 {
+      margin: 0;
+    }
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50px;
+    }
+    .name-username {
+      .username {
+        font-family: "JUST sans";
+        color: f.$black75;
+      }
+      margin-left: 8px;
+    }
+  }
+  .post-photo {
+    width: 100%;
+    max-height: 600px;
+  }
+  .caption-content {
+    p {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  .interact-buttons {
+    margin: 8px 0px;
+    gap: 10px;
+    img {
+      position: block;
+      top: 0;
+    }
+    button {
+      height: 24px;
+      width: 24px;
+      padding: 0;
+    }
+  }
+}
+.view-comments {
+  margin: 8px 0;
+  color: f.$black75;
+}
+.comment {
+  p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+.caption-author {
+  font-weight: bold;
+}
+.caption-text {
+  margin-left: 8px;
 }

@@ -7,8 +7,17 @@ import sendIcon from "../../assets/icons/send.svg";
 
 import { useParams } from "react-router-dom";
 import { getPost } from "../../firebase";
+import CommentSection from "../CommentSection/CommentSection";
+import Footer from "../Footer/Footer";
 const Post = (props) => {
+  let feed = props.for;
+
   //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
+  //declaring
+
+  const [post, setPost] = useState(props.post);
+  const [loading, setLoading] = useState(true);
+  const { postid } = useParams();
   const comments = (object, forCount) => {
     let count = Object.keys(object).length;
     let phrase = "";
@@ -24,11 +33,12 @@ const Post = (props) => {
       return phrase;
     }
   };
-  const [post, setPost] = useState(props.post);
-  // const [post, setPost] = useState(props.post);
+  //need to add comment component IF on mobile, open comment tab
+  //without going to that post's link
+  //ELSE (if on computer), go to the post link
+  //logic: check on press of button if screen width is of mobile or computer
 
-  const [loading, setLoading] = useState(true);
-  const { postid } = useParams();
+  // const [post, setPost] = useState(props.post);
   useEffect(() => {
     if (postid) {
       getPost(postid, null, (currentPost) => {
@@ -104,6 +114,8 @@ const Post = (props) => {
           <Link to={`/post/${post.id}`} className="flex jc-fs">
             <p className="view-comments">Add comment...</p>
           </Link>
+          <CommentSection comments={post.comments} />
+          <Footer />
         </div>
       )}
     </>

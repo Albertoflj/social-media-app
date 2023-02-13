@@ -1,0 +1,17 @@
+.title-tab {
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  border-bottom: 1px solid black;
+  .title-tab-content {
+    justify-content: space-between;
+    width: 100%;
+    h3 {
+      font-family: "JUST Sans";
+      font-weight: 300;
+      margin: 0;
+    }
+    button {
+    }
+  }
+}

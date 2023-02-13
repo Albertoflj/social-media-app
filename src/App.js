@@ -11,6 +11,7 @@ import { getUserData } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setUsername, setFinishedFetching } from "./redux/userSlice";
 import Post from "./components/Posts/Post";
+import CommentSection from "./components/CommentSection/CommentSection";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -83,6 +84,7 @@ function App() {
           <Route exact path="/myprofile" element={<MainPage />} />
           <Route exact path="/post/:postid" element={<Post />} />
           <Route exact path="/user/:userid" element={<MainPage />} />
+          <Route exact path="/comments" element={<CommentSection />} />
         </Routes>
       </div>
     </HashRouter>

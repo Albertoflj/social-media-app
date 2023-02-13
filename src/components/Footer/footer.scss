@@ -3,6 +3,9 @@
   border-top: 1px solid black;
   position: fixed;
   bottom: 0;
+  z-index: 100;
+  box-sizing: border-box;
+  left: 0;
   .footer-content {
     justify-content: space-between;
     width: 100%;
