@@ -1,9 +1,15 @@
 import firebase from "firebase/compat/app";
+
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
+  FieldValue,
+  getCountFromServer,
   getDocs,
   getFirestore,
+  limit,
+  orderBy,
   query,
+  serverTimestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -22,7 +28,7 @@ const app = firebase.initializeApp({
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 });
 export const auth = getAuth(app);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 //--------------------FOR USERS--------------------
 export const signInWithGoogle = async (callback) => {
@@ -270,49 +276,95 @@ export const getPost = (postId, user, callback) => {
 
   // Create a reference to the "comments" sub-collection of the post with id "postId"
   const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
+  const commentsQuery = query(
+    postCommentsCollectionRef,
+    orderBy("createdAt"),
+    limit(1)
+  );
 
   // Get the data of the post with id "postId"
   getDoc(postDocRef).then((postDoc) => {
     // Store the data of the post
     post = postDoc.data();
+    getCountFromServer(postCommentsCollectionRef).then((number) => {
+      console.log(number.data().count);
+      post.commentsLength = number.data().count;
 
-    // Initialize the "comments" field for the post
-    post.comments = {};
+      // Initialize the "comments" field for the post
+      post.comments = {};
 
-    // Store the id of the post
-    post.id = PID;
+      // Store the id of the post
+      post.id = PID;
 
-    // Store the data of the creator of the post
-    if (user) {
-      post.creator = usersData;
-      getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
-        //Iterate over each comment document in the collection
-        let commentCounter = 0;
-        postCommentDocs.forEach((postCommentDoc) => {
-          //Add the comment data to the comment object using the commentCounter as the key
-          post.comments[commentCounter] = postCommentDoc.data();
-          commentCounter++;
-        });
-        callback(post);
-      });
-    } else {
-      getUserData(post.user).then((postCreator) => {
-        post.creator = postCreator;
+      // Store the data of the creator of the post
+      if (user) {
+        post.creator = usersData;
         getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
           //Iterate over each comment document in the collection
           let commentCounter = 0;
           postCommentDocs.forEach((postCommentDoc) => {
-            //Add the comment data to the post object using the commentCounter as the key
+            //Add the comment data to the comment object using the commentCounter as the key
             post.comments[commentCounter] = postCommentDoc.data();
             commentCounter++;
           });
           callback(post);
         });
+      } else {
+        getUserData(post.user).then((postCreator) => {
+          post.creator = postCreator;
+          getDocs(commentsQuery).then((postCommentDocs) => {
+            //Iterate over each comment document in the collection
+            let commentCounter = 0;
+            postCommentDocs.forEach((postCommentDoc) => {
+              //Add the comment data to the post object using the commentCounter as the key
+              post.comments[commentCounter] = postCommentDoc.data();
+              commentCounter++;
+              // post.commentsLength =
+            });
+            callback(post);
+          });
+        });
+      }
+    });
+  });
+};
+
+export const sendComment = (postId, comment, user, userName, userPhoto) => {
+  const postRef = doc(db, "posts", postId);
+
+  getPost(postId, false, (post) => {
+    if (post.comments) {
+      const commentsRef = collection(db, "posts", postId, "comments");
+      console.log("has comments");
+      addDoc(commentsRef, {
+        author: user,
+        author_name: userName,
+        author_photo: userPhoto,
+        text: comment,
+        createdAt: serverTimestamp(),
       });
     }
   });
 };
 
-// const q = query(followingPostsRef, where("username", "==", username));
+export const getComments = (postId) => {
+  const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
+  const commentsQuery = query(
+    postCommentsCollectionRef,
+    orderBy("createdAt"),
+    limit(25)
+  );
+  getDocs(commentsQuery).then((postDoc) => {
+    postDoc.forEach((post) => {
+      // console.log(post.data());
+    });
+  });
+};
+
+// const commentsQuery = query(
+//   postCommentsCollectionRef,
+//   orderBy("createdAt"),
+//   limit(25)
+// );
 
 export default app;

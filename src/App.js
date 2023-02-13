@@ -9,7 +9,13 @@ import "./main-styles/main.scss";
 import MainPage from "./pages/main-page/MainPage";
 import { getUserData } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser, setUsername, setFinishedFetching } from "./redux/userSlice";
+import {
+  setUser,
+  setUsername,
+  setFinishedFetching,
+  setPhotoURL,
+  setDisplayName,
+} from "./redux/userSlice";
 import Post from "./components/Posts/Post";
 import CommentSection from "./components/CommentSection/CommentSection";
 
@@ -48,6 +54,10 @@ function App() {
     getUserData(user.uid).then((data) => {
       if (data && data.username) {
         dispatch(setUsername(data.username));
+        dispatch(setUser(data.uid));
+        dispatch(setPhotoURL(data.photoURL));
+        // console.log(data);
+        dispatch(setDisplayName(data.displayName));
       }
       dispatch(setFinishedFetching(true));
     });

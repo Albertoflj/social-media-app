@@ -19,7 +19,7 @@ const Post = (props) => {
   const [loading, setLoading] = useState(true);
   const { postid } = useParams();
   const comments = (object, forCount) => {
-    let count = Object.keys(object).length;
+    let count = object.commentsLength;
     let phrase = "";
     if (count > 1) {
       phrase = `View all ${count} comments`;
@@ -92,29 +92,20 @@ const Post = (props) => {
       </div>
     ))} */}
           <Link to={`/post/${post.id}`} className="flex jc-fs">
-            <p className="view-comments">{comments(post.comments, false)}</p>
+            <p className="view-comments">{comments(post, false)}</p>
           </Link>
           {
             <div className="comment flex fd-r ai-c">
-              <Link
-                replace
-                to={`/user/${
-                  post.comments[comments(post.comments, true) - 1].author
-                }`}
-              >
-                <p className="caption-author">
-                  {post.comments[comments(post.comments, true) - 1].author}
-                </p>
+              <Link replace to={`/user/${post.comments[0].author_name}`}>
+                <p className="caption-author">{post.comments[0].author_name}</p>
               </Link>
-              <p className="caption-text">
-                {post.comments[comments(post.comments, true) - 1].text}
-              </p>
+              <p className="caption-text">{post.comments[0].text}</p>
             </div>
           }
           <Link to={`/post/${post.id}`} className="flex jc-fs">
             <p className="view-comments">Add comment...</p>
           </Link>
-          <CommentSection comments={post.comments} />
+          <CommentSection comments={post.comments} post={post} />
           <Footer />
         </div>
       )}

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   username: null,
+  displayName: null,
   bio: null,
   photoURL: null,
   finishedFetching: false,
@@ -28,12 +29,24 @@ export const userSlice = createSlice({
     setUsername: (state, action) => {
       state.username = action.payload;
     },
+    setDisplayName: (state, action) => {
+      state.displayName = action.payload;
+    },
+    setPhotoURL: (state, action) => {
+      state.photoURL = action.payload;
+    },
     setFinishedFetching: (state, action) => {
       state.finishedFetching = action.payload;
     },
   },
 });
 
-export const { setUser, setUsername, setFinishedFetching } = userSlice.actions;
+export const {
+  setUser,
+  setUsername,
+  setFinishedFetching,
+  setPhotoURL,
+  setDisplayName,
+} = userSlice.actions;
 
 export default userSlice.reducer;
