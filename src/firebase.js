@@ -104,21 +104,6 @@ export const getUserData = async (uid) => {
 
 //--------------------FOR POSTS--------------------
 
-//post object
-
-// let post = {
-//   user: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
-//   caption: "This is a test post",
-//   photoURL: "https://picsum.photos/200",
-//   likes: [],
-//   comments: {
-//     0: {
-//       author: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
-//       comment: "This is a test comment",
-//     },
-//   },
-// };
-
 export const getFollowingPosts = async (userId, callback) => {
   const postsCollectionRef = collection(db, "posts");
   const userDocRef = doc(db, "users", userId);
@@ -146,7 +131,6 @@ export const getFollowingPosts = async (userId, callback) => {
               if (
                 postId === followingUserPosts[followingUserPosts.length - 1]
               ) {
-                console.log(posts);
                 callback(posts);
                 usersData = {};
               }
@@ -288,42 +272,44 @@ export const getPost = (postId, user, callback) => {
     post = postDoc.data();
     getCountFromServer(postCommentsCollectionRef).then((number) => {
       console.log(number.data().count);
-      post.commentsLength = number.data().count;
+      if (post) {
+        post.commentsLength = number.data().count;
 
-      // Initialize the "comments" field for the post
-      post.comments = {};
+        // Initialize the "comments" field for the post
+        post.comments = {};
 
-      // Store the id of the post
-      post.id = PID;
+        // Store the id of the post
+        post.id = PID;
 
-      // Store the data of the creator of the post
-      if (user) {
-        post.creator = usersData;
-        getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
-          //Iterate over each comment document in the collection
-          let commentCounter = 0;
-          postCommentDocs.forEach((postCommentDoc) => {
-            //Add the comment data to the comment object using the commentCounter as the key
-            post.comments[commentCounter] = postCommentDoc.data();
-            commentCounter++;
-          });
-          callback(post);
-        });
-      } else {
-        getUserData(post.user).then((postCreator) => {
-          post.creator = postCreator;
-          getDocs(commentsQuery).then((postCommentDocs) => {
+        // Store the data of the creator of the post
+        if (user) {
+          post.creator = usersData;
+          getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
             //Iterate over each comment document in the collection
             let commentCounter = 0;
             postCommentDocs.forEach((postCommentDoc) => {
-              //Add the comment data to the post object using the commentCounter as the key
+              //Add the comment data to the comment object using the commentCounter as the key
               post.comments[commentCounter] = postCommentDoc.data();
               commentCounter++;
-              // post.commentsLength =
             });
             callback(post);
           });
-        });
+        } else {
+          getUserData(post.user).then((postCreator) => {
+            post.creator = postCreator;
+            getDocs(commentsQuery).then((postCommentDocs) => {
+              //Iterate over each comment document in the collection
+              let commentCounter = 0;
+              postCommentDocs.forEach((postCommentDoc) => {
+                //Add the comment data to the post object using the commentCounter as the key
+                post.comments[commentCounter] = postCommentDoc.data();
+                commentCounter++;
+                // post.commentsLength =
+              });
+              callback(post);
+            });
+          });
+        }
       }
     });
   });
@@ -366,6 +352,31 @@ export const getComments = (postId) => {
     postDoc.forEach((post) => {
       // console.log(post.data());
     });
+  });
+};
+
+export const sendLike = async (userId, postId) => {
+  const likesRef = doc(db, "posts", postId);
+
+  // Wait for the comment to be added before returning the result
+
+  const result = await getDoc(likesRef).then((res) => {
+    let likes = res.data().likedBy;
+    console.log(likes);
+    if (likes.includes(userId)) {
+      const index = likes.indexOf(userId);
+      likes.splice(index, 1);
+      updateDoc(likesRef, {
+        likedBy: likes,
+      });
+      console.log("removeLike");
+    } else {
+      likes.push(userId);
+      updateDoc(likesRef, {
+        likedBy: likes,
+      });
+      console.log("addLike");
+    }
   });
 };
 
