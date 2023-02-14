@@ -51,10 +51,6 @@ const Post = (props) => {
       });
     }
   };
-  //need to add comment component IF on mobile, open comment tab
-  //without going to that post's link
-  //ELSE (if on computer), go to the post link
-  //logic: check on press of button if screen width is of mobile or computer
 
   // const [post, setPost] = useState(props.post);
   useEffect(() => {
@@ -71,6 +67,7 @@ const Post = (props) => {
   }, [user]);
   const handleShowComments = () => {
     setShowComments("comments-visible");
+    document.body.style.overflowY = "hidden";
     console.log(showComments);
   };
 
@@ -121,7 +118,7 @@ const Post = (props) => {
                 <p className="caption-text">{post.caption}</p>
               </div>
 
-              <Link to={`/post/${post.id}`} className="flex jc-fs">
+              <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
                 <p
                   className="view-comments"
                   onClick={() => {
@@ -131,6 +128,14 @@ const Post = (props) => {
                   {comments(post, false)}
                 </p>
               </Link>
+              <button
+                className="mobile view-comments"
+                onClick={() => {
+                  handleShowComments();
+                }}
+              >
+                {comments(post, false)}
+              </button>
               {comments(post, true) < 2 ? null : (
                 <div className="comment flex fd-r ai-c">
                   <Link replace to={`/user/${post.comments[0].author_name}`}>
@@ -148,7 +153,7 @@ const Post = (props) => {
                   </p>
                 </div>
               )}
-              <Link to={`/post/${post.id}`} className="flex jc-fs">
+              <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
                 <p
                   className="view-comments"
                   onClick={() => {
@@ -158,6 +163,15 @@ const Post = (props) => {
                   Add comment...
                 </p>
               </Link>
+              <button
+                className="mobile view-comments"
+                onClick={() => {
+                  handleShowComments();
+                }}
+              >
+                Add comment...
+              </button>
+
               {showComments === "comments-visible" ? (
                 <CommentSection
                   comments={post.comments}

@@ -41,6 +41,8 @@ const CommentSection = (props) => {
   function onbacc() {
     //make timeout
     setCommentsPos("comments-hidden");
+    document.body.style.overflowY = "scroll";
+
     setTimeout(() => {
       props.onBack();
       setCommentsPos("comments-visible");
