@@ -329,29 +329,37 @@ export const getPost = (postId, user, callback) => {
   });
 };
 
-export const sendComment = (postId, comment, user, userName, userPhoto) => {
-  const postRef = doc(db, "posts", postId);
+export const sendComment = async (
+  postId,
+  comment,
+  user,
+  userName,
+  userPhoto
+) => {
+  // const postRef = doc(db, "posts", postId);
 
-  getPost(postId, false, (post) => {
-    if (post.comments) {
-      const commentsRef = collection(db, "posts", postId, "comments");
-      console.log("has comments");
-      addDoc(commentsRef, {
-        author: user,
-        author_name: userName,
-        author_photo: userPhoto,
-        text: comment,
-        createdAt: serverTimestamp(),
-      });
-    }
+  // // Wait for the post to be retrieved before adding the comment
+  // await getPost(postId, false);
+
+  const commentsRef = collection(db, "posts", postId, "comments");
+
+  // Wait for the comment to be added before returning the result
+  const result = await addDoc(commentsRef, {
+    author: user,
+    author_name: userName,
+    author_photo: userPhoto,
+    text: comment,
+    createdAt: serverTimestamp(),
   });
+
+  return result;
 };
 
 export const getComments = (postId) => {
   const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
   const commentsQuery = query(
     postCommentsCollectionRef,
-    orderBy("createdAt"),
+    orderBy("createdAt", "desc"),
     limit(25)
   );
   getDocs(commentsQuery).then((postDoc) => {

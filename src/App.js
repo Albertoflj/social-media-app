@@ -56,8 +56,8 @@ function App() {
         dispatch(setUsername(data.username));
         dispatch(setUser(data.uid));
         dispatch(setPhotoURL(data.photoURL));
-        // console.log(data);
         dispatch(setDisplayName(data.displayName));
+        // console.log(data);
       }
       dispatch(setFinishedFetching(true));
     });
