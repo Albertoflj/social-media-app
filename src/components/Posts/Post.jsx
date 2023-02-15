@@ -24,6 +24,8 @@ const Post = (props) => {
   const [showComments, setShowComments] = useState("comments-hidden");
   const user = useSelector((state) => state.user.user);
   const [isLiked, setIsLiked] = useState(false);
+  const [likesCaption, setLikesCaption] = useState("");
+  const [likesCount, setLikesCount] = useState(0);
 
   const comments = (object, forCount) => {
     let count = object.commentsLength;
@@ -44,10 +46,22 @@ const Post = (props) => {
     if (!postid) {
       sendLike(user, post.id).then(() => {
         setIsLiked(!isLiked);
+        setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+        setLikesCaption(
+          `${isLiked ? likesCount - 1 : likesCount + 1} ${
+            isLiked ? "like" : "likes"
+          }`
+        );
       });
     } else {
       sendLike(user, postid).then(() => {
         setIsLiked(!isLiked);
+        setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+        setLikesCaption(
+          `${isLiked ? likesCount - 1 : likesCount + 1} ${
+            isLiked ? "like" : "likes"
+          }`
+        );
       });
     }
   };
@@ -58,13 +72,26 @@ const Post = (props) => {
       getPost(postid, null, (currentPost) => {
         setIsLiked(currentPost.likedBy.includes(user));
         setPost(currentPost);
+        setLikesCount(currentPost.likedBy.length);
+        if (currentPost.likedBy.length === 1) {
+          setLikesCaption(`${currentPost.likedBy.length} like`);
+        } else {
+          setLikesCaption(`${currentPost.likedBy.length} likes`);
+        }
         setLoading(false);
       });
     } else {
+      setLikesCount(props.post.likedBy.length);
       setIsLiked(props.post.likedBy.includes(user));
+      if (props.post.likedBy.length === 1) {
+        setLikesCaption(`${props.post.likedBy.length} like`);
+      } else {
+        setLikesCaption(`${props.post.likedBy.length} likes`);
+      }
       setLoading(false);
     }
   }, [user]);
+
   const handleShowComments = () => {
     setShowComments("comments-visible");
     document.body.style.overflowY = "hidden";
@@ -111,6 +138,7 @@ const Post = (props) => {
                   <img src={sendIcon} alt="share" className="icon" />
                 </button>
               </div>
+              <h4 className="likes-indicator">{likesCaption}</h4>
               <div className="caption-content flex fd-r">
                 <Link to={`/user/${post.creator.username}`}>
                   <p className="caption-author">{post.creator.username}</p>
@@ -138,7 +166,7 @@ const Post = (props) => {
               </button>
               {comments(post, true) < 2 ? null : (
                 <div className="comment flex fd-r ai-c">
-                  <Link replace to={`/user/${post.comments[0].author_name}`}>
+                  <Link to={`/user/${post.comments[0].author_name}`}>
                     <p className="caption-author">
                       {post.comments[0].author_name}
                     </p>
