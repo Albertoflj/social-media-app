@@ -13,8 +13,11 @@ import Footer from "../Footer/Footer";
 import { render } from "enzyme";
 import { useSelector } from "react-redux";
 import Header from "../Header/Header";
+import CommentInput from "../CommentSection/CommentInput";
+import Comments from "../CommentSection/Comments";
 const Post = (props) => {
   let feed = props.for;
+  //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
   //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
   //declaring
 
@@ -26,6 +29,8 @@ const Post = (props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCaption, setLikesCaption] = useState("");
   const [likesCount, setLikesCount] = useState(0);
+  const [isIndividualPost, setIsIndividualPost] = useState(false);
+  const [onPostPageStyling, setOnPostPageStyling] = useState("");
 
   const comments = (object, forCount) => {
     let count = object.commentsLength;
@@ -69,6 +74,8 @@ const Post = (props) => {
   // const [post, setPost] = useState(props.post);
   useEffect(() => {
     if (postid) {
+      setIsIndividualPost(true);
+      setOnPostPageStyling("desktop-individual-post");
       getPost(postid, null, (currentPost) => {
         setIsLiked(currentPost.likedBy.includes(user));
         setPost(currentPost);
@@ -105,100 +112,141 @@ const Post = (props) => {
       ) : (
         <>
           {postid ? <Header /> : null}
-          <div className="post-parent flex jc-c">
+          <div className={`post-parent flex jc-c ai-c ${onPostPageStyling}`}>
             <div key={post.id} className="post padding">
-              {/* photo */}
+              {/* user details*/}
               <Link to={`/user/${post.creator.username}`}>
-                <div className="user-details flex fd-r">
-                  <img src={post.creator.photoURL} alt="profile photo" />
+                <div className="user-details-feed flex fd-r">
+                  <img
+                    src={post.creator.photoURL}
+                    alt="profile photo"
+                    referrerPolicy="no-referrer"
+                  />
                   <div className="name-username">
                     <h5 className="display-name">{post.creator.displayName}</h5>
                     <h5 className="username">@{post.creator.username}</h5>
                   </div>
                 </div>
               </Link>
-              <img src={post.photo} alt="photo" className="post-photo" />
-              <div className="interact-buttons flex ai-c">
-                <button
-                  className="like-button flex ai-c jc-c"
-                  onClick={() => {
-                    handleLike();
-                  }}
-                >
-                  <img
-                    src={isLiked ? fullHeart : emptyHeart}
-                    alt="heart"
-                    className="icon"
-                  />
-                </button>
-                <button className="comment-button flex ai-c">
-                  <img src={commentIcon} alt="comment" className="icon" />
-                </button>
-                <button className="share-button flex ai-c">
-                  <img src={sendIcon} alt="share" className="icon" />
-                </button>
-              </div>
-              <h4 className="likes-indicator">{likesCaption}</h4>
-              <div className="caption-content flex fd-r">
-                <Link to={`/user/${post.creator.username}`}>
-                  <p className="caption-author">{post.creator.username}</p>
-                </Link>
-                <p className="caption-text">{post.caption}</p>
-              </div>
+              {/* post photo */}
+              <img
+                src={post.photo}
+                alt="photo"
+                className="post-photo"
+                referrerPolicy="no-referrer"
+              />
+              {/* post bottom content */}
+              <div className="post-bottom-content flex fd-c">
+                {/* user details for post page */}
+                {isIndividualPost ? (
+                  <Link to={`/user/${post.creator.username}`}>
+                    <div className="user-details post-page-ud flex fd-r">
+                      <img
+                        src={post.creator.photoURL}
+                        alt="profile photo"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="name-username flex fd-c jc-c ">
+                        <h5 className="display-name">
+                          {post.creator.displayName}
+                        </h5>
+                        <h5 className="username">@{post.creator.username}</h5>
+                      </div>
+                    </div>
+                  </Link>
+                ) : null}
+                <Comments post={postid ? post : props.post} />
+                {/* interact buttons */}
+                <div className="interact-buttons flex ai-c">
+                  <button
+                    className="like-button flex ai-c jc-c"
+                    onClick={() => {
+                      handleLike();
+                    }}
+                  >
+                    <img
+                      src={isLiked ? fullHeart : emptyHeart}
+                      alt="heart"
+                      className="icon"
+                    />
+                  </button>
+                  <button className="comment-button flex ai-c">
+                    <img src={commentIcon} alt="comment" className="icon" />
+                  </button>
+                  <button className="share-button flex ai-c">
+                    <img src={sendIcon} alt="share" className="icon" />
+                  </button>
+                </div>
 
-              <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
-                <p
-                  className="view-comments"
+                {/* likes indicator */}
+                <h4 className="likes-indicator">{likesCaption}</h4>
+
+                {/* caption content */}
+                <div className="caption-content flex fd-r">
+                  <Link to={`/user/${post.creator.username}`}>
+                    <p className="caption-author">{post.creator.username}</p>
+                  </Link>
+                  <p className="caption-text">{post.caption}</p>
+                </div>
+
+                {/* view comments */}
+                <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
+                  <p
+                    className="view-comments"
+                    onClick={() => {
+                      handleShowComments();
+                    }}
+                  >
+                    {comments(post, false)}
+                  </p>
+                </Link>
+                <button
+                  className="mobile view-comments"
                   onClick={() => {
                     handleShowComments();
                   }}
                 >
                   {comments(post, false)}
-                </p>
-              </Link>
-              <button
-                className="mobile view-comments"
-                onClick={() => {
-                  handleShowComments();
-                }}
-              >
-                {comments(post, false)}
-              </button>
-              {comments(post, true) < 2 ? null : (
-                <div className="comment flex fd-r ai-c">
-                  <Link to={`/user/${post.comments[0].author_name}`}>
-                    <p className="caption-author">
-                      {post.comments[0].author_name}
+                </button>
+                {comments(post, true) < 2 ? null : (
+                  <div className="comment flex fd-r ai-c">
+                    <Link to={`/user/${post.comments[0].author_name}`}>
+                      <p className="caption-author">
+                        {post.comments[0].author_name}
+                      </p>
+                    </Link>
+                    <p
+                      className="caption-text"
+                      onClick={() => {
+                        handleShowComments();
+                      }}
+                    >
+                      {post.comments[0].text}
                     </p>
-                  </Link>
+                  </div>
+                )}
+
+                {/* add comment */}
+                <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
                   <p
-                    className="caption-text"
+                    className="view-comments"
                     onClick={() => {
                       handleShowComments();
                     }}
                   >
-                    {post.comments[0].text}
+                    Add comment...
                   </p>
-                </div>
-              )}
-              <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
-                <p
-                  className="view-comments"
+                </Link>
+                <button
+                  className="mobile view-comments"
                   onClick={() => {
                     handleShowComments();
                   }}
                 >
                   Add comment...
-                </p>
-              </Link>
-              <button
-                className="mobile view-comments"
-                onClick={() => {
-                  handleShowComments();
-                }}
-              >
-                Add comment...
-              </button>
+                </button>
+                <CommentInput post={post} />
+              </div>
 
               {showComments === "comments-visible" ? (
                 <CommentSection

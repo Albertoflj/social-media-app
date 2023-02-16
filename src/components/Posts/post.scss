@@ -1,4 +1,6 @@
 @use "../../main-styles/main.scss" as f;
+@import "../../main-styles/mixins.scss";
+
 .posts {
   width: 100%;
   min-height: 100vh;
@@ -18,10 +20,13 @@
 }
 .post {
   width: 100%;
+  // width: fit-content;
   padding-top: 30px;
   max-width: 700px;
+  margin: auto;
+  justify-content: start;
   box-sizing: border-box;
-  .user-details {
+  .user-details-feed {
     margin-bottom: 8px;
     margin-top: 8px;
     width: fit-content;
@@ -44,7 +49,9 @@
   }
   .post-photo {
     width: 100%;
+    max-width: 500px;
     max-height: 600px;
+    object-fit: cover;
   }
   .caption-content {
     p {
@@ -72,6 +79,7 @@
   font-size: 15px;
   font-family: "JUST Sans";
   padding: 0;
+  width: fit-content;
 }
 
 .comment {
@@ -85,4 +93,146 @@
 }
 .caption-text {
   margin-left: 8px;
+}
+
+.post-page-ud {
+  display: none;
+}
+.post-bottom-content {
+  .comment-submit {
+    display: none;
+  }
+  .comment-section-content {
+    display: none;
+  }
+}
+.desktop-individual-post {
+  @include breakpoint-up(medium) {
+    * {
+      // border: 1px solid red;
+    }
+    .caption-content {
+      order: 2;
+    }
+    .view-comments {
+      display: none;
+    }
+    .comment {
+      display: none;
+    }
+    .post {
+      display: flex;
+      flex-direction: row;
+      max-width: 1062px;
+    }
+    .user-details-feed {
+      display: none;
+    }
+    .post-page-ud {
+      margin-bottom: 8px;
+      margin-top: 8px;
+      width: fit-content;
+      order: 1;
+
+      h5 {
+        margin: 0;
+      }
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50px;
+      }
+      .name-username {
+        .username {
+          font-family: "JUST sans";
+          color: f.$black75;
+        }
+        margin-left: 8px;
+      }
+      display: flex;
+      img {
+        width: 52px;
+        height: 52px;
+        border-radius: 50px;
+      }
+      h5 {
+        font-size: 16px;
+      }
+    }
+    .post-bottom-content {
+      padding-left: 50px;
+      height: 552px;
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .view-comments {
+    }
+    .comment-submit {
+      position: initial;
+      margin-top: 10px;
+      background-color: transparent;
+      display: flex;
+
+      // width: 100% !important;
+    }
+    .comment-section-content {
+      order: 3;
+      padding: 0;
+      display: flex;
+    }
+    .interact-buttons {
+      order: 4;
+    }
+    .likes-indicator {
+      order: 5;
+    }
+    .comment-submit {
+      order: 6;
+    }
+    .comments {
+      margin-top: 30px;
+      padding: 0;
+      max-height: 320px;
+      overflow-y: scroll;
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      scrollbar-width: none; /* Firefox */
+
+      .comments::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+      }
+      .comment:not(:first-child) {
+        margin-top: 10px;
+      }
+      .comment {
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50px;
+        }
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        .comment-content {
+          margin-left: 10px;
+          h4 {
+            margin: 0;
+          }
+        }
+      }
+    }
+    .post {
+      margin-top: 100px;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.2);
+      padding-top: 0;
+      padding-left: 0;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .post-bottom-content {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  }
 }

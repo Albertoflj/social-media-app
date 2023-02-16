@@ -271,7 +271,7 @@ export const getPost = (postId, user, callback) => {
     // Store the data of the post
     post = postDoc.data();
     getCountFromServer(postCommentsCollectionRef).then((number) => {
-      console.log(number.data().count);
+      // console.log(number.data().count);
       if (post) {
         post.commentsLength = number.data().count;
 
