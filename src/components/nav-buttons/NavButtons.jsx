@@ -16,11 +16,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
 import UsernamePrompt from "../UsernamePrompt/UsernamePrompt";
 import { checkIfUserHasUsername } from "../../firebase";
+import CreatePost from "../CreatePost/CreatePost";
 
 const NavButtons = (props) => {
   const [homeIcon, setHomeIcon] = useState(homeIconOutline);
   const [chatIcon, setChatIcon] = useState(chatIconOutline);
   const [username, setUsername] = useState("");
+
+  const [showPostPrompt, setShowPostPrompt] = useState(false);
   const location = useLocation();
   useEffect(() => {
     switch (location.pathname) {
@@ -36,9 +39,9 @@ const NavButtons = (props) => {
   }, [location.pathname, username]);
 
   //TODO this is a temporary solution, if user is logged in, prompt to post, if not, prompt to sign in
-  const checkIfUserIsLoggedIn = () => {
-    if (user) {
-      signOut();
+  const checkIfUserIsLoggedIn = (use) => {
+    if (user && use === "post") {
+      setShowPostPrompt(true);
     } else {
       signInWithGoogle((resultUsername) => {
         setUsername(resultUsername);
@@ -111,6 +114,7 @@ const NavButtons = (props) => {
           <img src={userNotLoggedInIcon} alt="user-icon" />
         )}
       </Link>
+      {/* <CreatePost /> */}
       {/* <UsernamePrompt /> */}
       {
         //if user is logged in, check if they have a username, if not, prompt them to create one

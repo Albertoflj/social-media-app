@@ -13,6 +13,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -29,6 +30,8 @@ const app = firebase.initializeApp({
 });
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export const storage = getStorage(app);
 
 //--------------------FOR USERS--------------------
 export const signInWithGoogle = async (callback) => {
@@ -385,5 +388,26 @@ export const sendLike = async (userId, postId) => {
 //   orderBy("createdAt"),
 //   limit(25)
 // );
+
+export const createPost = async (post) => {
+  const postCollectionRef = collection(db, "posts");
+  const result = await addDoc(postCollectionRef, {
+    caption: post.caption,
+    user: post.user,
+    photo: post.image,
+    likedBy: [],
+    // createdAt: serverTimestamp(),
+  });
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  getUserData(auth.currentUser.uid).then((user) => {
+    const userPosts = user.userPosts;
+    userPosts.push(result.id);
+    updateDoc(userRef, {
+      userPosts: userPosts,
+    });
+  });
+
+  return result;
+};
 
 export default app;
