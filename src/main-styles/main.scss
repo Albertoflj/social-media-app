@@ -67,6 +67,17 @@ a {
   width: fit-content;
   color: inherit;
 }
+.error {
+  border: 1px solid red !important;
+  color: red;
+}
+.error:placeholder-shown {
+  color: red;
+}
+.success {
+  border: 1px solid green !important;
+  color: green;
+}
 a {
 }
 a:visited {

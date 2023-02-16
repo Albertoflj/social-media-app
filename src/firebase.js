@@ -48,8 +48,9 @@ export const signInWithGoogle = async (callback) => {
             uid: result.user.uid,
             bio: "Hi! I'm new here.",
             followers: [],
-            following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2"],
+            following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2", result.user.uid],
             username: null,
+            userPosts: [],
           });
         }
         getDoc(userRef).then((res) => {
@@ -365,20 +366,17 @@ export const sendLike = async (userId, postId) => {
 
   const result = await getDoc(likesRef).then((res) => {
     let likes = res.data().likedBy;
-    console.log(likes);
     if (likes.includes(userId)) {
       const index = likes.indexOf(userId);
       likes.splice(index, 1);
       updateDoc(likesRef, {
         likedBy: likes,
       });
-      console.log("removeLike");
     } else {
       likes.push(userId);
       updateDoc(likesRef, {
         likedBy: likes,
       });
-      console.log("addLike");
     }
   });
 };

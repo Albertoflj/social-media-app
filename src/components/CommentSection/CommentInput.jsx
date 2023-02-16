@@ -15,12 +15,12 @@ const CommentInput = (props) => {
     e.preventDefault();
     let comment = commentRef.current.value;
     if (comment.length > 100) {
-      setErrorClass("comment-too-long");
+      setErrorClass("error");
       setErrorPlaceholder("Comment too long");
       commentRef.current.value = "";
       return;
     } else if (comment.length <= 0) {
-      setErrorClass("comment-too-long");
+      setErrorClass("error");
       setErrorPlaceholder("Comment too short");
       commentRef.current.value = "";
     } else {

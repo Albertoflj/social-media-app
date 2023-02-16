@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import UsernamePrompt from "../UsernamePrompt/UsernamePrompt";
 import { checkIfUserHasUsername } from "../../firebase";
 import CreatePost from "../CreatePost/CreatePost";
+import Backdrop from "../Backdrop/Backdrop";
 
 const NavButtons = (props) => {
   const [homeIcon, setHomeIcon] = useState(homeIconOutline);
@@ -42,12 +43,17 @@ const NavButtons = (props) => {
   const checkIfUserIsLoggedIn = (use) => {
     if (user && use === "post") {
       setShowPostPrompt(true);
+      document.body.style.overflowY = "hidden";
     } else {
       signInWithGoogle((resultUsername) => {
         setUsername(resultUsername);
         console.log(username);
       });
     }
+  };
+  const onCancel = () => {
+    setShowPostPrompt(false);
+    document.body.style.overflowY = "scroll";
   };
   const [user] = useAuthState(auth);
   const reduxUsername = useSelector((state) => state.user.username);
@@ -63,7 +69,7 @@ const NavButtons = (props) => {
           <button
             className="post-button"
             onClick={() => {
-              checkIfUserIsLoggedIn();
+              checkIfUserIsLoggedIn("post");
             }}
           >
             <img src={postIconOutline} alt="post-icon" />
@@ -89,7 +95,7 @@ const NavButtons = (props) => {
           <button
             className="post-button"
             onClick={() => {
-              checkIfUserIsLoggedIn();
+              checkIfUserIsLoggedIn("post");
             }}
           >
             <img src={postIconOutline} alt="post-icon" />
@@ -114,8 +120,13 @@ const NavButtons = (props) => {
           <img src={userNotLoggedInIcon} alt="user-icon" />
         )}
       </Link>
-      {/* <CreatePost /> */}
-      {/* <UsernamePrompt /> */}
+      {showPostPrompt ? (
+        <>
+          <CreatePost onSuccess={onCancel} />
+          <Backdrop onCancel={onCancel} />
+        </>
+      ) : null}
+      {/* <CreatePost onSuccess={onCancel} /> */}
       {
         //if user is logged in, check if they have a username, if not, prompt them to create one
         // user && !reduxUsername && reduxFinishedFetching ? (

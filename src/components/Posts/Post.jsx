@@ -99,10 +99,11 @@ const Post = (props) => {
     }
   }, [user]);
 
-  const handleShowComments = () => {
-    setShowComments("comments-visible");
-    document.body.style.overflowY = "hidden";
-    console.log(showComments);
+  const handleShowComments = (device) => {
+    if (device === "mobile") {
+      document.body.style.overflowY = "hidden";
+      setShowComments("comments-visible");
+    }
   };
 
   return (
@@ -170,9 +171,20 @@ const Post = (props) => {
                       className="icon"
                     />
                   </button>
-                  <button className="comment-button flex ai-c">
+                  <button
+                    className="mobile comment-button flex ai-c"
+                    onClick={() => {
+                      handleShowComments("mobile");
+                    }}
+                  >
                     <img src={commentIcon} alt="comment" className="icon" />
                   </button>
+                  <Link to={`/post/${post.id}`} className="desktop">
+                    <button className="comment-button flex ai-c">
+                      <img src={commentIcon} alt="comment" className="icon" />
+                    </button>
+                  </Link>
+
                   <button className="share-button flex ai-c">
                     <img src={sendIcon} alt="share" className="icon" />
                   </button>
@@ -194,7 +206,7 @@ const Post = (props) => {
                   <p
                     className="view-comments"
                     onClick={() => {
-                      handleShowComments();
+                      handleShowComments("PC");
                     }}
                   >
                     {comments(post, false)}
@@ -203,7 +215,7 @@ const Post = (props) => {
                 <button
                   className="mobile view-comments"
                   onClick={() => {
-                    handleShowComments();
+                    handleShowComments("mobile");
                   }}
                 >
                   {comments(post, false)}
@@ -218,7 +230,7 @@ const Post = (props) => {
                     <p
                       className="caption-text"
                       onClick={() => {
-                        handleShowComments();
+                        handleShowComments("mobile");
                       }}
                     >
                       {post.comments[0].text}
@@ -231,7 +243,7 @@ const Post = (props) => {
                   <p
                     className="view-comments"
                     onClick={() => {
-                      handleShowComments();
+                      handleShowComments("PC");
                     }}
                   >
                     Add comment...
@@ -240,7 +252,7 @@ const Post = (props) => {
                 <button
                   className="mobile view-comments"
                   onClick={() => {
-                    handleShowComments();
+                    handleShowComments("mobile  ");
                   }}
                 >
                   Add comment...
@@ -260,7 +272,7 @@ const Post = (props) => {
               ) : null}
             </div>
           </div>
-          <Footer />
+          {postid ? <Footer /> : null}
         </>
       )}
     </>
