@@ -49,7 +49,7 @@ export const signInWithGoogle = async (callback) => {
             bio: "Hi! I'm new here.",
             followers: [],
             following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2", result.user.uid],
-            username: null,
+            username: result.user.email,
             userPosts: [],
           });
         }

@@ -27,6 +27,7 @@ const NavButtons = (props) => {
   const [showPostPrompt, setShowPostPrompt] = useState(false);
   const location = useLocation();
   useEffect(() => {
+    console.log(reduxUsername);
     switch (location.pathname) {
       case "/":
         setHomeIcon(homeIconFill);
@@ -44,6 +45,8 @@ const NavButtons = (props) => {
     if (user && use === "post") {
       setShowPostPrompt(true);
       document.body.style.overflowY = "hidden";
+    } else if (user && use === "logout") {
+      signOut();
     } else {
       signInWithGoogle((resultUsername) => {
         setUsername(resultUsername);
@@ -106,7 +109,7 @@ const NavButtons = (props) => {
         to={user ? `/user/${username}` : location.pathname}
         className="profile-button"
         onClick={() => {
-          checkIfUserIsLoggedIn();
+          checkIfUserIsLoggedIn("logout");
         }}
       >
         {user ? (
@@ -132,7 +135,11 @@ const NavButtons = (props) => {
         // user && !reduxUsername && reduxFinishedFetching ? (
         //   <UsernamePrompt username={reduxUsername} />
         // ) : null
-        // <UsernamePrompt username={reduxUsername} ff={reduxFinishedFetching} />
+        // setTimeout(() => {
+        //   if (user && !reduxUsername && reduxFinishedFetching) {
+        //     <UsernamePrompt username={reduxUsername} />;
+        //   }
+        // }, 1000)
       }
     </div>
   );
