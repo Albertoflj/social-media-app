@@ -49,7 +49,12 @@ export const signInWithGoogle = async (callback) => {
             bio: "Hi! I'm new here.",
             followers: [],
             following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2", result.user.uid],
-            username: result.user.email,
+            //generate random id for user
+            username:
+              // delete space from display name
+              result.user.displayName.replace(/\s/g, "") +
+              Math.floor(Math.random() * 1000),
+
             userPosts: [],
           });
         }
