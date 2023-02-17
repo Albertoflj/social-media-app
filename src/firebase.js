@@ -116,12 +116,15 @@ export const getFollowingPosts = async (userId, callback) => {
   let posts = [];
   let post = {};
   let usersData = {};
-  getDoc(userDocRef).then((userDoc) => {
+
+  getDoc(userDocRef).then(async (userDoc) => {
     const followingUsers = userDoc.data().following;
+    const userDataPromises = followingUsers.map((followingUser) => {
+      return getUserData(followingUser);
+    });
+    const userDataList = await Promise.all(userDataPromises);
+    usersData = Object.assign({}, ...userDataList);
     followingUsers.forEach((followingUser) => {
-      getUserData(followingUser).then((user) => {
-        usersData = user;
-      });
       const followingUserQuery = query(
         usersCollectionRef,
         where("uid", "==", followingUser)
@@ -136,7 +139,6 @@ export const getFollowingPosts = async (userId, callback) => {
                 postId === followingUserPosts[followingUserPosts.length - 1]
               ) {
                 callback(posts);
-                usersData = {};
               }
             });
           });
