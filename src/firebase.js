@@ -35,38 +35,71 @@ export const storage = getStorage(app);
 
 //--------------------FOR USERS--------------------
 export const signInWithGoogle = async (callback) => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const userRef = doc(db, "users", result.user.uid);
+  const provider = new GoogleAuthProvider();
 
-      getDoc(userRef).then((docs) => {
-        if (!docs.data()) {
+  // check if user is already signed in
+  if (localStorage.getItem("signedInWithGoogle") === "true") {
+    const user = auth.currentUser;
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+
+      getDoc(userRef).then((doc) => {
+        if (!doc.exists()) {
           setDoc(userRef, {
-            displayName: result.user.displayName,
-            email: result.user.email,
-            photoURL: result.user.photoURL,
-            uid: result.user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            uid: user.uid,
             bio: "Hi! I'm new here.",
             followers: [],
-            following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2", result.user.uid],
+            following: [],
             username:
-              result.user.displayName.replace(/\s/g, "") +
+              user.displayName.replace(/\s/g, "") +
               Math.floor(Math.random() * 1000),
             userPosts: [],
           });
         }
-        getDoc(userRef).then((res) => {
-          callback(res.data().username);
-        });
+        callback(user.uid);
       });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+    } else {
+      // user is not signed in
+      localStorage.removeItem("signedInWithGoogle");
+      signInWithGoogle(callback);
+    }
+  } else {
+    // user is not signed in
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        localStorage.setItem("signedInWithGoogle", "true");
+        const userRef = doc(db, "users", result.user.uid);
 
+        getDoc(userRef).then((doc) => {
+          if (!doc.exists()) {
+            setDoc(userRef, {
+              displayName: result.user.displayName,
+              email: result.user.email,
+              photoURL: result.user.photoURL,
+              uid: result.user.uid,
+              bio: "Hi! I'm new here.",
+              followers: [],
+              following: [],
+              username:
+                result.user.displayName.replace(/\s/g, "") +
+                Math.floor(Math.random() * 1000),
+              userPosts: [],
+            });
+          }
+          callback(result.user.uid);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+};
 export const signOut = () => {
   auth.signOut();
+  localStorage.removeItem("signedInWithGoogle");
 };
 
 export const checkIfUsernameExists = async (username) => {
