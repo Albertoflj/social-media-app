@@ -49,12 +49,9 @@ export const signInWithGoogle = async (callback) => {
             bio: "Hi! I'm new here.",
             followers: [],
             following: ["QahgWcwga4edVwhtJUBsqmDTMlQ2", result.user.uid],
-            //generate random id for user
             username:
-              // delete space from display name
               result.user.displayName.replace(/\s/g, "") +
               Math.floor(Math.random() * 1000),
-
             userPosts: [],
           });
         }
@@ -114,37 +111,39 @@ export const getUserData = async (uid) => {
 //--------------------FOR POSTS--------------------
 
 export const getFollowingPosts = async (userId, callback) => {
-  const postsCollectionRef = collection(db, "posts");
-  const userDocRef = doc(db, "users", userId);
-  const usersCollectionRef = collection(db, "users");
+  signInWithGoogle(() => {
+    const postsCollectionRef = collection(db, "posts");
+    const userDocRef = doc(db, "users", userId);
+    const usersCollectionRef = collection(db, "users");
 
-  let posts = [];
-  let post = {};
-  let usersData = {};
+    let posts = [];
+    let post = {};
+    let usersData = {};
 
-  getDoc(userDocRef).then(async (userDoc) => {
-    const followingUsers = userDoc.data().following;
-    const userDataPromises = followingUsers.map((followingUser) => {
-      return getUserData(followingUser);
-    });
-    const userDataList = await Promise.all(userDataPromises);
-    usersData = Object.assign({}, ...userDataList);
-    followingUsers.forEach((followingUser) => {
-      const followingUserQuery = query(
-        usersCollectionRef,
-        where("uid", "==", followingUser)
-      );
-      getDocs(followingUserQuery).then((followingUserDocs) => {
-        followingUserDocs.forEach((followingUserDoc) => {
-          let followingUserPosts = followingUserDoc.data().userPosts;
-          followingUserPosts.forEach((postId) => {
-            getPost(postId, usersData, (post) => {
-              posts.push(post);
-              if (
-                postId === followingUserPosts[followingUserPosts.length - 1]
-              ) {
-                callback(posts);
-              }
+    getDoc(userDocRef).then(async (userDoc) => {
+      const followingUsers = userDoc.data().following;
+      const userDataPromises = followingUsers.map((followingUser) => {
+        return getUserData(followingUser);
+      });
+      const userDataList = await Promise.all(userDataPromises);
+      usersData = Object.assign({}, ...userDataList);
+      followingUsers.forEach((followingUser) => {
+        const followingUserQuery = query(
+          usersCollectionRef,
+          where("uid", "==", followingUser)
+        );
+        getDocs(followingUserQuery).then((followingUserDocs) => {
+          followingUserDocs.forEach((followingUserDoc) => {
+            let followingUserPosts = followingUserDoc.data().userPosts;
+            followingUserPosts.forEach((postId) => {
+              getPost(postId, usersData, (post) => {
+                posts.push(post);
+                if (
+                  postId === followingUserPosts[followingUserPosts.length - 1]
+                ) {
+                  callback(posts);
+                }
+              });
             });
           });
         });
