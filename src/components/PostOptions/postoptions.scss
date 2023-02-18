@@ -1,0 +1,49 @@
+@use "../../main-styles/main.scss" as f;
+@import "../../main-styles/mixins.scss";
+
+.post-options {
+  position: relative;
+  //   height: 100%;
+  height: 50px;
+  gap: 1px;
+  span {
+    height: 5px;
+    width: 5px;
+    gap: 5px;
+    border-radius: 50%;
+    background-color: f.$black50;
+  }
+}
+.post-options-menu {
+  position: absolute;
+  background-color: white;
+  //   top: px;
+  width: fit-content;
+  height: fit-content;
+  background-color: f.$black05;
+  z-index: 10000;
+  top: 50px;
+  right: -20px;
+  .post-options-menu-item {
+    box-shadow: 0 0 5px 0 f.$black50;
+    background-color: white;
+    width: 150px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: black;
+    cursor: pointer;
+    // &:hover {
+    //   background-color: f.$black05;
+    // }
+  }
+}
+@include breakpoint-up(medium) {
+  .post-options-menu {
+    right: -30px;
+    top: 50px;
+  }
+}

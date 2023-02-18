@@ -12,6 +12,7 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
@@ -52,7 +53,7 @@ export const signInWithGoogle = async (callback) => {
             uid: user.uid,
             bio: "Hi! I'm new here.",
             followers: [],
-            following: [],
+            following: [user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2"],
             username:
               user.displayName.replace(/\s/g, "") +
               Math.floor(Math.random() * 1000),
@@ -488,6 +489,23 @@ export const followUser = async (userId) => {
     followers.push(auth.currentUser.uid);
     updateDoc(userRef2, {
       followers: followers,
+    });
+  });
+
+  return result;
+};
+
+export const deletePost = async (postId) => {
+  const postRef = doc(db, "posts", postId);
+  const result = await deleteDoc(postRef);
+  // remove post from user's posts list
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const result2 = await getDoc(userRef).then((res) => {
+    let userPosts = res.data().userPosts;
+    const index = userPosts.indexOf(postId);
+    userPosts.splice(index, 1);
+    updateDoc(userRef, {
+      userPosts: userPosts,
     });
   });
 

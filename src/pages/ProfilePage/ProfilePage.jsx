@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import Backdrop from "../../components/Backdrop/Backdrop";
 import EditProfile from "../../components/EditProfile/EditProfile";
+import FollowUnfollowButton from "../../components/FollowUnfollowButton/FollowUnfollowButton";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import { followUser, getPost, getUserData, unfollowUser } from "../../firebase";
@@ -41,12 +42,12 @@ const ProfilePage = () => {
             });
           });
         });
-        // sort the posts by date
-        setUserPosts((prevUserPosts) => {
-          return prevUserPosts.sort((a, b) => {
-            return b.timestamp - a.timestamp;
-          });
-        });
+        // // sort the posts by date
+        // setUserPosts((prevUserPosts) => {
+        //   return prevUserPosts.sort((a, b) => {
+        //     return b.timestamp - a.timestamp;
+        //   });
+        // });
       }
       // check if the current user is following the page user
 
@@ -91,7 +92,7 @@ const ProfilePage = () => {
                   <h1>Posts</h1>
                 </div>
                 <div className="following-count">
-                  <h2>{userData.following.length}</h2>
+                  <h2>{userData.following.length - 1}</h2>
                   <h1>Following</h1>
                 </div>
                 <div className="follower-count">
@@ -109,24 +110,12 @@ const ProfilePage = () => {
                 >
                   Edit Profile
                 </button>
-              ) : followingUser ? (
-                <button
-                  className="unfollow-button"
-                  onClick={() => {
-                    handleUnfollow();
-                  }}
-                >
-                  Unfollow
-                </button>
               ) : (
-                <button
-                  className="follow-button"
-                  onClick={() => {
-                    handleFollow();
-                  }}
-                >
-                  Follow
-                </button>
+                <FollowUnfollowButton
+                  isFollowing={followingUser}
+                  handleFollow={handleFollow}
+                  handleUnfollow={handleUnfollow}
+                />
               )}
             </div>
           </div>

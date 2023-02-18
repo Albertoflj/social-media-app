@@ -29,7 +29,6 @@ const Posts = () => {
         }
       });
     }
-    console.log(posts);
     setLoading(false);
   }, [user]);
 
@@ -40,7 +39,11 @@ const Posts = () => {
       ) : (
         <div className="posts flex  fd-c ai-c">
           {posts.map((post) => (
-            <Post post={post} key={post.id} />
+            <Post
+              post={post}
+              key={post.id}
+              isCreatorOfPost={user.uid === post.creator.uid}
+            />
           ))}
         </div>
       )}

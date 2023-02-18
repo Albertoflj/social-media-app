@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import Header from "../Header/Header";
 import CommentInput from "../CommentSection/CommentInput";
 import Comments from "../CommentSection/Comments";
+import PostOptions from "../PostOptions/PostOptions";
 const Post = (props) => {
   let feed = props.for;
   //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
@@ -31,7 +32,6 @@ const Post = (props) => {
   const [likesCount, setLikesCount] = useState(0);
   const [isIndividualPost, setIsIndividualPost] = useState(false);
   const [onPostPageStyling, setOnPostPageStyling] = useState("");
-
   const comments = (object, forCount) => {
     let count = object.commentsLength;
     let phrase = "";
@@ -116,19 +116,24 @@ const Post = (props) => {
           <div className={`post-parent flex jc-c ai-c ${onPostPageStyling}`}>
             <div key={post.id} className="post padding">
               {/* user details*/}
-              <Link to={`/user/${post.creator.uid}`}>
-                <div className="user-details-feed flex fd-r">
-                  <img
-                    src={post.creator.photoURL}
-                    alt="profile photo"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="name-username">
-                    <h5 className="display-name">{post.creator.displayName}</h5>
-                    <h5 className="username">@{post.creator.username}</h5>
+              <div className={`user-details-feed flex fd-r ai-c`}>
+                <Link to={`/user/${post.creator.uid}`}>
+                  <div className="user-details-feed flex fd-r">
+                    <img
+                      src={post.creator.photoURL}
+                      alt="profile photo"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="name-username">
+                      <h5 className="display-name">
+                        {post.creator.displayName}
+                      </h5>
+                      <h5 className="username">@{post.creator.username}</h5>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+                {props.isCreatorOfPost ? <PostOptions post={post} /> : null}
+              </div>
               {/* post photo */}
               <img
                 src={post.photo}
@@ -140,21 +145,26 @@ const Post = (props) => {
               <div className="post-bottom-content flex fd-c">
                 {/* user details for post page */}
                 {isIndividualPost ? (
-                  <Link to={`/user/${post.creator.uid}`}>
-                    <div className="desktop user-details post-page-ud flex fd-r">
-                      <img
-                        src={post.creator.photoURL}
-                        alt="profile photo"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className=" name-username flex fd-c jc-c ">
-                        <h5 className="display-name">
-                          {post.creator.displayName}
-                        </h5>
-                        <h5 className="username">@{post.creator.username}</h5>
-                      </div>
-                    </div>
-                  </Link>
+                  <div className="desktop user-details post-page-ud flex fd-r">
+                    <Link to={`/user/${post.creator.uid}`}>
+                      <>
+                        <img
+                          src={post.creator.photoURL}
+                          alt="profile photo"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="name-username flex fd-c jc-c ">
+                          <h5 className="display-name">
+                            {post.creator.displayName}
+                          </h5>
+                          <h5 className="username">@{post.creator.username}</h5>
+                        </div>
+                      </>
+                    </Link>
+                    {user === post.creator.uid ? (
+                      <PostOptions post={post} />
+                    ) : null}
+                  </div>
                 ) : null}
                 <Comments post={postid ? post : props.post} />
                 {/* interact buttons */}
