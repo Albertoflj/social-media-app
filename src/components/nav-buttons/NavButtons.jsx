@@ -11,7 +11,12 @@ import "./nav-buttons.scss";
 import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { auth, signInWithGoogle, signOut } from "../../firebase";
+import {
+  auth,
+  checkIfUserIsSignedIn,
+  signInWithGoogle,
+  signOut,
+} from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
 import UsernamePrompt from "../UsernamePrompt/UsernamePrompt";
@@ -110,6 +115,9 @@ const NavButtons = (props) => {
         className="profile-button"
         onClick={() => {
           // checkIfUserIsLoggedIn("logout");
+          if (!checkIfUserIsSignedIn()) {
+            signInWithGoogle();
+          }
         }}
       >
         {user ? (

@@ -1,5 +1,9 @@
 import React from "react";
-import { getFollowingPosts } from "../../firebase";
+import {
+  getAllPosts,
+  getAllPostsFromSpecificUser,
+  getFollowingPosts,
+} from "../../firebase";
 import { auth, signInWithGoogle, signOut } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
@@ -8,11 +12,16 @@ import "./post.scss";
 
 import { Link } from "react-router-dom";
 import Post from "./Post";
+import { useSelector } from "react-redux";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user] = useAuthState(auth);
+  const [userExists, setUserExists] = useState(false);
+  const isFinishedFetching = useSelector(
+    (state) => state.user.finishedFetching
+  );
 
   // useEffect(() => {
   //   setPosts(dummyData);
@@ -22,12 +31,28 @@ const Posts = () => {
 
   useEffect(() => {
     if (user) {
+      setUserExists(true);
       getFollowingPosts(user.uid, (followingPosts) => {
         // console.log(followingPosts);
         if (followingPosts) {
-          setPosts(followingPosts);
+          setPosts((prevPosts) => {
+            const newPosts = followingPosts.filter(
+              (followingPost) =>
+                !prevPosts.some((prevPost) => prevPost.id === followingPost.id)
+            );
+            return [...prevPosts, ...newPosts];
+          });
         }
       });
+    } else if (!user && isFinishedFetching) {
+      getAllPostsFromSpecificUser(
+        "QahgWcwga4edVwhtJUBsqmDTMlQ2",
+        (guestPosts) => {
+          if (guestPosts) {
+            setPosts(guestPosts);
+          }
+        }
+      );
     }
     setLoading(false);
   }, [user]);
@@ -42,7 +67,7 @@ const Posts = () => {
             <Post
               post={post}
               key={post.id}
-              isCreatorOfPost={user.uid === post.creator.uid}
+              isCreatorOfPost={user && user.uid === post.creator.uid}
             />
           ))}
         </div>

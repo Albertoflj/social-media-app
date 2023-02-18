@@ -85,7 +85,7 @@ export const signInWithGoogle = async (callback) => {
               followers: [],
               following: [],
               username:
-                result.user.displayName.replace(/\s/g, "") +
+                result.user.displayName.replace(/\s/g, "").toLowerCase() +
                 Math.floor(Math.random() * 1000),
               userPosts: [],
             });
@@ -192,6 +192,32 @@ export const getFollowingPosts = async (userId, callback) => {
       });
     });
   });
+};
+export const getAllPostsFromSpecificUser = async (userId, callback) => {
+  const postsCollectionRef = collection(db, "posts");
+  const userDocRef = doc(db, "users", userId);
+  try {
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userPosts = userDoc.data().userPosts;
+      const userData = await getUserData(userId);
+      let posts = [];
+      userPosts.forEach((postId) => {
+        getPost(postId, userData, (post) => {
+          posts.push(post);
+          if (postId === userPosts[userPosts.length - 1]) {
+            callback(posts);
+          }
+        });
+      });
+    } else {
+      console.log(`User ${userId} not found`);
+      callback([]);
+    }
+  } catch (error) {
+    console.log(`Error getting user ${userId}: ${error}`);
+    callback([]);
+  }
 };
 
 //   // Create a reference to the "posts" collection in the database

@@ -51,6 +51,7 @@ function App() {
   const dispatch = useDispatch();
   const [user] = useAuthState(auth);
   const username = useSelector((state) => state.user.username);
+
   if (user) {
     getUserData(user.uid).then((data) => {
       if (data && data.username) {
