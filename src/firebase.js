@@ -288,14 +288,9 @@ export const getFollowingPosts = async (userId, callback) => {
 //   });
 // };
 
-export const getPost = (postId, user, callback) => {
+export const getPost = (postId, usersData, callback) => {
   // Create an object to store a single post
   let post = {};
-  //get creator data
-  let usersData = {};
-  if (user) {
-    usersData = user;
-  }
 
   // Create a reference to the post with id "postId" in the "posts" collection
   const postDocRef = doc(db, "posts", postId);
@@ -314,27 +309,23 @@ export const getPost = (postId, user, callback) => {
     // Store the data of the post
     post = postDoc.data();
     getCountFromServer(postCommentsCollectionRef).then((number) => {
-      // console.log(number.data().count);
       if (post) {
-        post.commentsLength = number.data().count;
-
-        // Initialize the "comments" field for the post
-        post.comments = {};
-
         // Store the id of the post
         post.id = PID;
 
         // Store the data of the creator of the post
-        if (user) {
-          post.creator = usersData;
+        if (usersData && usersData[post.user]) {
+          post.creator = usersData[post.user];
           getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
             //Iterate over each comment document in the collection
             let commentCounter = 0;
+            post.comments = {};
             postCommentDocs.forEach((postCommentDoc) => {
               //Add the comment data to the comment object using the commentCounter as the key
               post.comments[commentCounter] = postCommentDoc.data();
               commentCounter++;
             });
+            post.commentsLength = commentCounter;
             callback(post);
           });
         } else {
@@ -343,12 +334,13 @@ export const getPost = (postId, user, callback) => {
             getDocs(commentsQuery).then((postCommentDocs) => {
               //Iterate over each comment document in the collection
               let commentCounter = 0;
+              post.comments = {};
               postCommentDocs.forEach((postCommentDoc) => {
                 //Add the comment data to the post object using the commentCounter as the key
                 post.comments[commentCounter] = postCommentDoc.data();
                 commentCounter++;
-                // post.commentsLength =
               });
+              post.commentsLength = commentCounter;
               callback(post);
             });
           });
