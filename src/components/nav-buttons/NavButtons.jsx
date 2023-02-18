@@ -45,6 +45,7 @@ const NavButtons = (props) => {
     if (user && use === "post") {
       setShowPostPrompt(true);
       document.body.style.overflowY = "hidden";
+      // signOut();
     } else if (user && use === "logout") {
       signOut();
     } else {

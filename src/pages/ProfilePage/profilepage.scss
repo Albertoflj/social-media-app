@@ -80,7 +80,7 @@
       .edit-profile-button {
         margin-top: 40px;
         background-color: transparent;
-        color: f.$black;
+        color: black;
         border: 1px solid black;
         padding: 10px;
         max-width: 200px;
@@ -113,10 +113,20 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    .img-replace {
-      height: 200px;
-      width: 100%;
-      max-width: 200px;
+    .post-photo-container {
+      background-color: black;
+      .post-img {
+        height: 200px;
+        width: 100%;
+        max-width: 200px;
+        transition: all 0.1s ease-in-out;
+      }
+    }
+    .post-photo-container:hover {
+      cursor: pointer;
+      img {
+        opacity: 0.5;
+      }
     }
   }
 }
@@ -128,12 +138,13 @@
     .user-post-gallery {
       width: 100%;
       margin-top: 40px;
-
-      .img-replace {
-        background-color: #e0e0e0;
-        height: 300px;
-        width: 100%;
-        max-width: 300px;
+      .post-photo-container {
+        .post-img {
+          background-color: #e0e0e0;
+          height: 300px;
+          width: 100%;
+          max-width: 300px;
+        }
       }
     }
   }

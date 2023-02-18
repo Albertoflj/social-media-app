@@ -252,7 +252,7 @@ const Post = (props) => {
                 <button
                   className="mobile view-comments"
                   onClick={() => {
-                    handleShowComments("mobile  ");
+                    handleShowComments("mobile");
                   }}
                 >
                   Add comment...

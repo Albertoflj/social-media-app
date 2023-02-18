@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import Backdrop from "../../components/Backdrop/Backdrop";
+import EditProfile from "../../components/EditProfile/EditProfile";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import { getPost, getUserData } from "../../firebase";
@@ -15,6 +17,7 @@ const ProfilePage = () => {
   const [userData, setUserData] = useState({});
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showEditProfile, setShowEditProfile] = useState(false);
 
   useEffect(() => {
     if (currentUser === user) {
@@ -40,7 +43,7 @@ const ProfilePage = () => {
       }
       setLoading(false);
     });
-  }, [user, currentUser]);
+  }, [user, currentUser, showEditProfile]);
 
   return (
     <div>
@@ -79,7 +82,14 @@ const ProfilePage = () => {
               </div>
 
               {currentUserPage ? (
-                <button className="edit-profile-button">Edit Profile</button>
+                <button
+                  className="edit-profile-button"
+                  onClick={() => {
+                    setShowEditProfile(true);
+                  }}
+                >
+                  Edit Profile
+                </button>
               ) : (
                 <button className="follow-button">Follow</button>
               )}
@@ -89,15 +99,31 @@ const ProfilePage = () => {
             {userPosts ? (
               userPosts.map((post) => {
                 return (
-                  <Link key={post.id} to={`/post/${post.id}`}>
-                    <img className="img-replace" src={post.photo} />
+                  <Link
+                    key={post.id}
+                    to={`/post/${post.id}`}
+                    className="post-photo-container"
+                  >
+                    <img className="post-img" src={post.photo} />
                   </Link>
                 );
               })
             ) : (
               <>No post</>
+              //   NEED TO ADD POST TIMESTAMP AND SORT POSTS BY TIME ON FEED
+              // NEED TO ADD EDIT PROFILE POPUP
+              // NEED TO ADD ALL FOLLOWERS AND FOLLOWING TABS (optional)
             )}
           </div>
+          {showEditProfile ? (
+            <>
+              <EditProfile
+                user={userData}
+                onExit={() => setShowEditProfile(false)}
+              />
+              <Backdrop onCancel={() => setShowEditProfile(false)} />
+            </>
+          ) : null}
         </div>
       )}
 

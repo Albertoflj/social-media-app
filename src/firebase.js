@@ -447,4 +447,13 @@ export const createPost = async (post) => {
   return result;
 };
 
+export const editProfile = async (name, bio) => {
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const result = await updateDoc(userRef, {
+    displayName: name,
+    bio: bio,
+  });
+  return result;
+};
+
 export default app;
