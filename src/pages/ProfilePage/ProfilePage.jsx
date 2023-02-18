@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -8,6 +9,7 @@ import FollowUnfollowButton from "../../components/FollowUnfollowButton/FollowUn
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import {
+  auth,
   followUser,
   getPost,
   getUserData,
@@ -17,7 +19,8 @@ import {
 import "./profilepage.scss";
 
 const ProfilePage = () => {
-  const currentUser = useSelector((state) => state.user.user);
+  const authUser = useAuthState(auth);
+  const currentUser = authUser[0]?.uid;
   const pageUser = useParams();
   const user = pageUser.userid;
   const [currentUserPage, setCurrentUserPage] = useState(false);
@@ -28,6 +31,9 @@ const ProfilePage = () => {
   const [followingUser, setFollowingUser] = useState(false);
 
   useEffect(() => {
+    setUserPosts([]);
+    setCurrentUserPage(false);
+
     if (currentUser === user) {
       setCurrentUserPage(true);
     }
@@ -48,14 +54,7 @@ const ProfilePage = () => {
             });
           });
         });
-        // // sort the posts by date
-        // setUserPosts((prevUserPosts) => {
-        //   return prevUserPosts.sort((a, b) => {
-        //     return b.timestamp - a.timestamp;
-        //   });
-        // });
       }
-      // check if the current user is following the page user
 
       if (data.followers.includes(currentUser)) {
         setFollowingUser(true);
@@ -63,13 +62,17 @@ const ProfilePage = () => {
 
       setLoading(false);
     });
-  }, [user, currentUser, showEditProfile]);
+  }, [user, currentUser, showEditProfile, pageUser.userId, pageUser]);
 
   const handleUnfollow = () => {
-    unfollowUser(user).then(setFollowingUser(false));
+    unfollowUser(user).then(() => {
+      setFollowingUser(false);
+    });
   };
   const handleFollow = () => {
-    followUser(user).then(setFollowingUser(true));
+    followUser(user).then(() => {
+      setFollowingUser(true);
+    });
   };
   return (
     <div>

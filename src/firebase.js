@@ -13,6 +13,8 @@ import {
   updateDoc,
   where,
   deleteDoc,
+  startAt,
+  endAt,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
@@ -83,7 +85,7 @@ export const signInWithGoogle = async (callback) => {
               uid: result.user.uid,
               bio: "Hi! I'm new here.",
               followers: [],
-              following: [],
+              following: [result.user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2"],
               username:
                 result.user.displayName.replace(/\s/g, "").toLowerCase() +
                 Math.floor(Math.random() * 1000),
@@ -504,7 +506,7 @@ export const unfollowUser = async (userId) => {
     });
   });
 
-  return result;
+  return result, result2;
 };
 
 export const followUser = async (userId) => {
@@ -526,7 +528,7 @@ export const followUser = async (userId) => {
     });
   });
 
-  return result;
+  return result, result2;
 };
 
 export const deletePost = async (postId) => {
@@ -544,6 +546,31 @@ export const deletePost = async (postId) => {
   });
 
   return result;
+};
+
+export const deleteComment = async (postId, commentId) => {
+  const commentRef = doc(db, "posts", postId, "comments", commentId);
+  const result = await deleteDoc(commentRef);
+  return result;
+};
+
+export const searchUsers = async (searchTerm) => {
+  const usersRef = collection(db, "users");
+  const usersQuery = query(
+    usersRef,
+    orderBy("username"),
+    startAt(searchTerm),
+    endAt(searchTerm + "\uf8ff"),
+    limit(5)
+  );
+  const querySnapshot = await getDocs(usersQuery);
+  const users = [];
+  querySnapshot.forEach((doc) => {
+    if (doc.data().username.startsWith(searchTerm)) {
+      users.push({ id: doc.id, ...doc.data() });
+    }
+  });
+  return users;
 };
 
 export default app;

@@ -95,7 +95,11 @@ function App() {
           <Route exact path="/messages" element={<MainPage />} />
           <Route exact path="/myprofile" element={<MainPage />} />
           <Route exact path="/post/:postid" element={<Post />} />
-          <Route exact path="/user/:userid" element={<ProfilePage />} />
+          <Route
+            exact
+            path="/user/:userid"
+            element={<ProfilePage key={document.location.href} />}
+          />
           <Route exact path="/comments" element={<CommentSection />} />
         </Routes>
       </div>

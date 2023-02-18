@@ -35,9 +35,7 @@ const CreatePost = (props) => {
     if (!validateImage(image)) return;
     const imageRef = ref(storage, `images/${image.name + uuidv4()}`);
     uploadBytes(imageRef, image).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
       getDownloadURL(imageRef).then((url) => {
-        console.log("url: ", url);
         let post = {
           caption: caption,
           user: user.uid,
@@ -46,6 +44,7 @@ const CreatePost = (props) => {
         };
         createPost(post);
         props.onSuccess();
+        window.location.reload();
       });
     });
   };
