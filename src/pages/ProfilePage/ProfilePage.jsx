@@ -7,7 +7,13 @@ import EditProfile from "../../components/EditProfile/EditProfile";
 import FollowUnfollowButton from "../../components/FollowUnfollowButton/FollowUnfollowButton";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-import { followUser, getPost, getUserData, unfollowUser } from "../../firebase";
+import {
+  followUser,
+  getPost,
+  getUserData,
+  signOut,
+  unfollowUser,
+} from "../../firebase";
 import "./profilepage.scss";
 
 const ProfilePage = () => {
@@ -102,14 +108,25 @@ const ProfilePage = () => {
               </div>
 
               {currentUserPage ? (
-                <button
-                  className="edit-profile-button"
-                  onClick={() => {
-                    setShowEditProfile(true);
-                  }}
-                >
-                  Edit Profile
-                </button>
+                <div className="edit-logout flex fd-r ai-c">
+                  <button
+                    className="edit-profile-button"
+                    onClick={() => {
+                      setShowEditProfile(true);
+                    }}
+                  >
+                    Edit Profile
+                  </button>
+                  <button
+                    className="logout-button"
+                    onClick={() => {
+                      signOut();
+                      window.location.reload();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
               ) : (
                 <FollowUnfollowButton
                   isFollowing={followingUser}
@@ -134,8 +151,6 @@ const ProfilePage = () => {
               })
             ) : (
               <>No post</>
-              //   NEED TO ADD POST TIMESTAMP AND SORT POSTS BY TIME ON FEED
-              // NEED TO ADD EDIT PROFILE POPUP
               // NEED TO ADD ALL FOLLOWERS AND FOLLOWING TABS (optional)
             )}
           </div>

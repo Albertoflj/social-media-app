@@ -7,7 +7,12 @@ import commentIcon from "../../assets/icons/chat.svg";
 import sendIcon from "../../assets/icons/send.svg";
 
 import { useParams } from "react-router-dom";
-import { getPost, sendLike } from "../../firebase";
+import {
+  checkIfUserIsSignedIn,
+  getPost,
+  sendLike,
+  signInWithGoogle,
+} from "../../firebase";
 import CommentSection from "../CommentSection/CommentSection";
 import Footer from "../Footer/Footer";
 import { render } from "enzyme";
@@ -49,25 +54,33 @@ const Post = (props) => {
 
   const handleLike = () => {
     if (!postid) {
-      sendLike(user, post.id).then(() => {
-        setIsLiked(!isLiked);
-        setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
-        setLikesCaption(
-          `${isLiked ? likesCount - 1 : likesCount + 1} ${
-            isLiked ? "like" : "likes"
-          }`
-        );
-      });
+      if (checkIfUserIsSignedIn()) {
+        sendLike(user, post.id).then(() => {
+          setIsLiked(!isLiked);
+          setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+          setLikesCaption(
+            `${isLiked ? likesCount - 1 : likesCount + 1} ${
+              isLiked ? "like" : "likes"
+            }`
+          );
+        });
+      } else {
+        signInWithGoogle();
+      }
     } else {
-      sendLike(user, postid).then(() => {
-        setIsLiked(!isLiked);
-        setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
-        setLikesCaption(
-          `${isLiked ? likesCount - 1 : likesCount + 1} ${
-            isLiked ? "like" : "likes"
-          }`
-        );
-      });
+      if (checkIfUserIsSignedIn()) {
+        sendLike(user, postid).then(() => {
+          setIsLiked(!isLiked);
+          setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+          setLikesCaption(
+            `${isLiked ? likesCount - 1 : likesCount + 1} ${
+              isLiked ? "like" : "likes"
+            }`
+          );
+        });
+      } else {
+        signInWithGoogle();
+      }
     }
   };
 
@@ -100,9 +113,13 @@ const Post = (props) => {
   }, [user]);
 
   const handleShowComments = (device) => {
-    if (device === "mobile") {
-      document.body.style.overflowY = "hidden";
-      setShowComments("comments-visible");
+    if (checkIfUserIsSignedIn) {
+      if (device === "mobile") {
+        document.body.style.overflowY = "hidden";
+        setShowComments("comments-visible");
+      }
+    } else {
+      signInWithGoogle();
     }
   };
 

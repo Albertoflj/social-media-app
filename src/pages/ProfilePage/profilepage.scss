@@ -98,13 +98,12 @@
       }
 
       .edit-profile-button {
-        margin-top: 40px;
         background-color: transparent;
         color: black;
         border: 1px solid black;
         padding: 10px;
         max-width: 200px;
-        width: 100%;
+        width: 45%;
         border-radius: 50px;
         font-size: 18px;
 
@@ -148,6 +147,27 @@
         opacity: 0.5;
       }
     }
+  }
+}
+.edit-logout {
+  margin-top: 40px;
+
+  max-width: 300px;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 20px;
+  .logout-button {
+    background-color: #ff8928;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    height: 45px;
+    width: 45%;
+  }
+
+  .logout-button:hover {
+    background-color: #cf7023;
   }
 }
 

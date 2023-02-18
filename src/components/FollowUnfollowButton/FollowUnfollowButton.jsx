@@ -1,4 +1,5 @@
 import React from "react";
+import { checkIfUserIsSignedIn, signInWithGoogle } from "../../firebase";
 
 const FollowUnfollowButton = (props) => {
   return (
@@ -7,7 +8,8 @@ const FollowUnfollowButton = (props) => {
         <button
           className="unfollow-button"
           onClick={() => {
-            props.handleUnfollow();
+            if (checkIfUserIsSignedIn()) props.handleUnfollow();
+            else signInWithGoogle();
           }}
         >
           Unfollow
@@ -16,7 +18,8 @@ const FollowUnfollowButton = (props) => {
         <button
           className="follow-button"
           onClick={() => {
-            props.handleFollow();
+            if (checkIfUserIsSignedIn()) props.handleFollow();
+            else signInWithGoogle();
           }}
         >
           Follow

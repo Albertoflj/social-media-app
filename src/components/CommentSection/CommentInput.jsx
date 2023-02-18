@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { sendComment } from "../../firebase";
+import {
+  checkIfUserIsSignedIn,
+  sendComment,
+  signInWithGoogle,
+} from "../../firebase";
 import "./commentsection.scss";
 import sendIcon from "../../assets/icons/send.svg";
 import { useRef } from "react";
@@ -14,31 +18,35 @@ const CommentInput = (props) => {
   async function submitComment(e) {
     e.preventDefault();
     let comment = commentRef.current.value;
-    if (comment.length > 100) {
-      setErrorClass("error");
-      setErrorPlaceholder("Comment too long");
-      commentRef.current.value = "";
-      return;
-    } else if (comment.length <= 0) {
-      setErrorClass("error");
-      setErrorPlaceholder("Comment too short");
-      commentRef.current.value = "";
+    if (checkIfUserIsSignedIn()) {
+      if (comment.length > 100) {
+        setErrorClass("error");
+        setErrorPlaceholder("Comment too long");
+        commentRef.current.value = "";
+        return;
+      } else if (comment.length <= 0) {
+        setErrorClass("error");
+        setErrorPlaceholder("Comment too short");
+        commentRef.current.value = "";
+      } else {
+        await sendComment(
+          props.post.id,
+          comment,
+          user.user,
+          user.username,
+          userPhoto
+        );
+        // commentsRef.current.scroll({
+        //   top: commentsRef.current.scrollHeight,
+        //   behavior: "smooth",
+        // });
+
+        //NEED TO ADD LOAD ON SCROLL
+
+        commentRef.current.value = "";
+      }
     } else {
-      await sendComment(
-        props.post.id,
-        comment,
-        user.user,
-        user.username,
-        userPhoto
-      );
-      // commentsRef.current.scroll({
-      //   top: commentsRef.current.scrollHeight,
-      //   behavior: "smooth",
-      // });
-
-      //NEED TO ADD LOAD ON SCROLL
-
-      commentRef.current.value = "";
+      signInWithGoogle();
     }
   }
 

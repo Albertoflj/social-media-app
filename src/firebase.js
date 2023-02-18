@@ -102,6 +102,14 @@ export const signOut = () => {
   auth.signOut();
   localStorage.removeItem("signedInWithGoogle");
 };
+export const checkIfUserIsSignedIn = () => {
+  const user = auth.currentUser;
+  if (user) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const checkIfUsernameExists = async (username) => {
   const usersRef = collection(db, "users");
