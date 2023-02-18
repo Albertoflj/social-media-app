@@ -1,0 +1,140 @@
+@use "../../main-styles/main.scss" as f;
+@import "../../main-styles/mixins.scss";
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  .profile-details {
+    width: 100%;
+    max-width: 800px;
+
+    .avatar-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+
+      .profile-image-replacer {
+        background-color: #e0e0e0;
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        margin-bottom: 10px;
+      }
+
+      .names {
+        text-align: center;
+        h1 {
+          font-size: 24px;
+          margin: 0;
+        }
+
+        h2 {
+          font-size: 16px;
+          color: f.$black75;
+          margin: 0;
+        }
+      }
+
+      .activity-stats {
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 20px;
+        max-width: 400px;
+
+        .post-count,
+        .following-count,
+        .follower-count {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100px;
+
+          h2 {
+            font-size: 24px;
+            margin: 0;
+          }
+
+          h1 {
+            font-size: 18px;
+            margin: 0;
+          }
+        }
+      }
+      .follow-button {
+        margin-top: 40px;
+        background-color: #008cba;
+        color: white;
+        padding: 10px;
+        max-width: 200px;
+        width: 100%;
+        border-radius: 50px;
+        font-size: 18px;
+        &:hover {
+          background-color: #0077a7;
+          cursor: pointer;
+        }
+      }
+      .edit-profile-button {
+        margin-top: 40px;
+        background-color: transparent;
+        color: f.$black;
+        border: 1px solid black;
+        padding: 10px;
+        max-width: 200px;
+        width: 100%;
+        border-radius: 50px;
+        font-size: 18px;
+
+        &:hover {
+          background-color: #f1f1f1;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .bio {
+      margin-top: 20px;
+
+      p {
+        font-size: 18px;
+        line-height: 1.5;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  }
+  .user-post-gallery {
+    width: 100%;
+    margin-top: 40px;
+    height: fit-content;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    .img-replace {
+      height: 200px;
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}
+
+@include breakpoint-up(medium) {
+  .profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    .user-post-gallery {
+      width: 100%;
+      margin-top: 40px;
+
+      .img-replace {
+        background-color: #e0e0e0;
+        height: 300px;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  }
+}

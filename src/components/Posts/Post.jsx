@@ -141,13 +141,13 @@ const Post = (props) => {
                 {/* user details for post page */}
                 {isIndividualPost ? (
                   <Link to={`/user/${post.creator.username}`}>
-                    <div className="user-details post-page-ud flex fd-r">
+                    <div className="desktop user-details post-page-ud flex fd-r">
                       <img
                         src={post.creator.photoURL}
                         alt="profile photo"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="name-username flex fd-c jc-c ">
+                      <div className=" name-username flex fd-c jc-c ">
                         <h5 className="display-name">
                           {post.creator.displayName}
                         </h5>

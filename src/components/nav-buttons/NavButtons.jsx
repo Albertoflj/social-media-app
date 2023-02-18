@@ -84,7 +84,7 @@ const NavButtons = (props) => {
             to={user ? "/messages" : location.pathname}
             className="messages-button"
             onClick={() => {
-              checkIfUserIsLoggedIn();
+              checkIfUserIsLoggedIn("logout");
             }}
           >
             <img src={chatIcon} alt="chatIcon" />
@@ -106,10 +106,10 @@ const NavButtons = (props) => {
         </>
       )}
       <Link
-        to={user ? `/user/${username}` : location.pathname}
+        to={user ? `/user/${user.uid}` : location.pathname}
         className="profile-button"
         onClick={() => {
-          checkIfUserIsLoggedIn("logout");
+          // checkIfUserIsLoggedIn("logout");
         }}
       >
         {user ? (

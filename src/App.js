@@ -18,6 +18,7 @@ import {
 } from "./redux/userSlice";
 import Post from "./components/Posts/Post";
 import CommentSection from "./components/CommentSection/CommentSection";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -93,7 +94,7 @@ function App() {
           <Route exact path="/messages" element={<MainPage />} />
           <Route exact path="/myprofile" element={<MainPage />} />
           <Route exact path="/post/:postid" element={<Post />} />
-          <Route exact path="/user/:userid" element={<MainPage />} />
+          <Route exact path="/user/:userid" element={<ProfilePage />} />
           <Route exact path="/comments" element={<CommentSection />} />
         </Routes>
       </div>

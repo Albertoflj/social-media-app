@@ -433,7 +433,7 @@ export const createPost = async (post) => {
     user: post.user,
     photo: post.image,
     likedBy: [],
-    // createdAt: serverTimestamp(),
+    createdAt: serverTimestamp(),
   });
   const userRef = doc(db, "users", auth.currentUser.uid);
   getUserData(auth.currentUser.uid).then((user) => {
