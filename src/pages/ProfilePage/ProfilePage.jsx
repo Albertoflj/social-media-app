@@ -6,7 +6,7 @@ import Backdrop from "../../components/Backdrop/Backdrop";
 import EditProfile from "../../components/EditProfile/EditProfile";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-import { getPost, getUserData } from "../../firebase";
+import { followUser, getPost, getUserData, unfollowUser } from "../../firebase";
 import "./profilepage.scss";
 
 const ProfilePage = () => {
@@ -18,6 +18,7 @@ const ProfilePage = () => {
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [followingUser, setFollowingUser] = useState(false);
 
   useEffect(() => {
     if (currentUser === user) {
@@ -40,11 +41,29 @@ const ProfilePage = () => {
             });
           });
         });
+        // sort the posts by date
+        setUserPosts((prevUserPosts) => {
+          return prevUserPosts.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+          });
+        });
       }
+      // check if the current user is following the page user
+
+      if (data.followers.includes(currentUser)) {
+        setFollowingUser(true);
+      }
+
       setLoading(false);
     });
   }, [user, currentUser, showEditProfile]);
 
+  const handleUnfollow = () => {
+    unfollowUser(user).then(setFollowingUser(false));
+  };
+  const handleFollow = () => {
+    followUser(user).then(setFollowingUser(true));
+  };
   return (
     <div>
       <Header />
@@ -57,7 +76,7 @@ const ProfilePage = () => {
               <img
                 src={userData.photoURL}
                 alt="profile photo"
-                className="profile-image-replacer"
+                className="profile-image"
               />
               <div className="names">
                 <h1>{userData.displayName}</h1>
@@ -90,8 +109,24 @@ const ProfilePage = () => {
                 >
                   Edit Profile
                 </button>
+              ) : followingUser ? (
+                <button
+                  className="unfollow-button"
+                  onClick={() => {
+                    handleUnfollow();
+                  }}
+                >
+                  Unfollow
+                </button>
               ) : (
-                <button className="follow-button">Follow</button>
+                <button
+                  className="follow-button"
+                  onClick={() => {
+                    handleFollow();
+                  }}
+                >
+                  Follow
+                </button>
               )}
             </div>
           </div>

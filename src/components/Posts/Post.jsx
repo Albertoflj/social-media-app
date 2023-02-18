@@ -116,7 +116,7 @@ const Post = (props) => {
           <div className={`post-parent flex jc-c ai-c ${onPostPageStyling}`}>
             <div key={post.id} className="post padding">
               {/* user details*/}
-              <Link to={`/user/${post.creator.username}`}>
+              <Link to={`/user/${post.creator.uid}`}>
                 <div className="user-details-feed flex fd-r">
                   <img
                     src={post.creator.photoURL}
@@ -140,7 +140,7 @@ const Post = (props) => {
               <div className="post-bottom-content flex fd-c">
                 {/* user details for post page */}
                 {isIndividualPost ? (
-                  <Link to={`/user/${post.creator.username}`}>
+                  <Link to={`/user/${post.creator.uid}`}>
                     <div className="desktop user-details post-page-ud flex fd-r">
                       <img
                         src={post.creator.photoURL}
@@ -195,7 +195,7 @@ const Post = (props) => {
 
                 {/* caption content */}
                 <div className="caption-content flex fd-r">
-                  <Link to={`/user/${post.creator.username}`}>
+                  <Link to={`/user/${post.creator.uid}`}>
                     <p className="caption-author">{post.creator.username}</p>
                   </Link>
                   <p className="caption-text">{post.caption}</p>
@@ -222,7 +222,7 @@ const Post = (props) => {
                 </button>
                 {comments(post, true) < 2 ? null : (
                   <div className="comment flex fd-r ai-c">
-                    <Link to={`/user/${post.comments[0].author_name}`}>
+                    <Link to={`/user/${post.comments[0].author}`}>
                       <p className="caption-author">
                         {post.comments[0].author_name}
                       </p>

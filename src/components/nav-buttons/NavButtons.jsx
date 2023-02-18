@@ -27,7 +27,6 @@ const NavButtons = (props) => {
   const [showPostPrompt, setShowPostPrompt] = useState(false);
   const location = useLocation();
   useEffect(() => {
-    console.log(reduxUsername);
     switch (location.pathname) {
       case "/":
         setHomeIcon(homeIconFill);

@@ -456,4 +456,50 @@ export const editProfile = async (name, bio) => {
   return result;
 };
 
+export const unfollowUser = async (userId) => {
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const result = await getDoc(userRef).then((res) => {
+    let following = res.data().following;
+    const index = following.indexOf(userId);
+    following.splice(index, 1);
+    updateDoc(userRef, {
+      following: following,
+    });
+  });
+  // remove user from followers list
+  const userRef2 = doc(db, "users", userId);
+  const result2 = await getDoc(userRef2).then((res) => {
+    let followers = res.data().followers;
+    const index = followers.indexOf(auth.currentUser.uid);
+    followers.splice(index, 1);
+    updateDoc(userRef2, {
+      followers: followers,
+    });
+  });
+
+  return result;
+};
+
+export const followUser = async (userId) => {
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const result = await getDoc(userRef).then((res) => {
+    let following = res.data().following;
+    following.push(userId);
+    updateDoc(userRef, {
+      following: following,
+    });
+  });
+  // add user to followers list
+  const userRef2 = doc(db, "users", userId);
+  const result2 = await getDoc(userRef2).then((res) => {
+    let followers = res.data().followers;
+    followers.push(auth.currentUser.uid);
+    updateDoc(userRef2, {
+      followers: followers,
+    });
+  });
+
+  return result;
+};
+
 export default app;

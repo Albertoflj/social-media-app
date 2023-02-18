@@ -56,7 +56,7 @@ const Comments = (props) => {
                 className="comment-photo"
               ></img>
               <div className="comment-content flex fd-c">
-                <Link to={`/user/${comment.author_name}`}>
+                <Link to={`/user/${comment.author}`}>
                   <h4 className="comment-username">{comment.author_name}</h4>
                 </Link>
                 <p className="comment-text">{comment.text}</p>

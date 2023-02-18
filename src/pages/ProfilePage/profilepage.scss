@@ -16,11 +16,10 @@
       align-items: center;
       width: 100%;
 
-      .profile-image-replacer {
-        background-color: #e0e0e0;
+      .profile-image {
         border-radius: 50%;
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         margin-bottom: 10px;
       }
 
@@ -72,11 +71,31 @@
         width: 100%;
         border-radius: 50px;
         font-size: 18px;
+        height: 45px;
         &:hover {
           background-color: #0077a7;
           cursor: pointer;
         }
       }
+      .unfollow-button {
+        margin-top: 40px;
+        background-color: #ffffff;
+        color: #008cba;
+        border: 2px solid #008cba;
+        padding: 10px;
+        max-width: 200px;
+        width: 100%;
+        border-radius: 50px;
+        font-size: 18px;
+        position: relative;
+        overflow: hidden;
+        height: 45px;
+        &:hover {
+          background-color: rgba(0, 135, 186, 0.8);
+          color: #ffffff;
+        }
+      }
+
       .edit-profile-button {
         margin-top: 40px;
         background-color: transparent;
@@ -135,6 +154,14 @@
   .profile-container {
     max-width: 1200px;
     margin: 0 auto;
+    .profile-details {
+      .avatar-info {
+        .profile-image {
+          width: 150px;
+          height: 150px;
+        }
+      }
+    }
     .user-post-gallery {
       width: 100%;
       margin-top: 40px;
