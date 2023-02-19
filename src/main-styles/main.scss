@@ -97,7 +97,15 @@ input[type="text"]:focus {
   box-shadow: none;
   // outline: black;
 }
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
 
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 @include breakpoint-up(medium) {
   .mobile {
     display: none;

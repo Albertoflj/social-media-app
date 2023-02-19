@@ -19,6 +19,7 @@ import {
 import Post from "./components/Posts/Post";
 import CommentSection from "./components/CommentSection/CommentSection";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import MessagesPage from "./pages/MessagesPage/MessagesPage";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -92,7 +93,7 @@ function App() {
       )} */}
         <Routes>
           <Route exact path="/" element={<MainPage />} />
-          <Route exact path="/messages" element={<MainPage />} />
+          <Route exact path="/messages" element={<MessagesPage />} />
           <Route exact path="/myprofile" element={<MainPage />} />
           <Route exact path="/post/:postid" element={<Post />} />
           <Route

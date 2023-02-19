@@ -89,7 +89,7 @@ const NavButtons = (props) => {
             to={user ? "/messages" : location.pathname}
             className="messages-button"
             onClick={() => {
-              checkIfUserIsLoggedIn("logout");
+              checkIfUserIsLoggedIn("");
             }}
           >
             <img src={chatIcon} alt="chatIcon" />

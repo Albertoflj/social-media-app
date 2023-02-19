@@ -1,0 +1,37 @@
+@import "../../main-styles/mixins.scss";
+
+.messages-page {
+  height: 100vh;
+  box-sizing: border-box;
+}
+.conversations-with-title {
+  width: 100%;
+}
+
+@include breakpoint-up(large) {
+  .conversations-with-title {
+    border-right: 1px solid #e6e6e6;
+    max-width: 500px;
+  }
+  .conversation-messages {
+    position: relative;
+    overflow-y: scroll;
+    box-sizing: border-box;
+    height: calc(100vh - 200px);
+  }
+  .desktop-messages {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .conversations-container {
+    height: calc(100vh - 100px);
+  }
+}
+.desktop-large {
+  display: none;
+}
+@include breakpoint-up(large) {
+  .desktop-large {
+    display: block;
+  }
+}
