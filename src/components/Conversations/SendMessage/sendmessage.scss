@@ -1,0 +1,27 @@
+.send-message {
+  //   position: absolute;
+  bottom: 70px;
+  //   height: 30px;
+  background-color: white;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0px 20px;
+  button {
+    width: 32px;
+    height: 32px;
+    margin-left: 5px;
+    img {
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
+.message-input {
+  box-sizing: border-box;
+  height: 38px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  width: 100%;
+  padding: 0 30px;
+  text-align: left;
+}

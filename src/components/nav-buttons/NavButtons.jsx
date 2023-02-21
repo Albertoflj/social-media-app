@@ -125,7 +125,7 @@ const NavButtons = (props) => {
             src={user.photoURL}
             alt="profile-photo"
             className="profile-photo"
-            // referrerPolicy="no-referrer"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <img src={userNotLoggedInIcon} alt="user-icon" />

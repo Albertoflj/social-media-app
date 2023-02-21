@@ -9,8 +9,11 @@ $conversation-messages-height: 100vh;
   height: $conversation-messages-height;
   display: flex;
   flex-direction: column;
+
   .conversation-messages {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 150px);
+    box-sizing: border-box;
+    padding-bottom: 30px;
   }
 }
 .conversation-messages {

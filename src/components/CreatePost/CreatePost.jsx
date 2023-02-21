@@ -44,7 +44,7 @@ const CreatePost = (props) => {
         };
         createPost(post);
         props.onSuccess();
-        window.location.reload();
+        // window.location.reload();
       });
     });
   };

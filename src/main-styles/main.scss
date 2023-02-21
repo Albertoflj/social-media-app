@@ -114,3 +114,8 @@ input[type="text"]:focus {
     display: flex;
   }
 }
+@include breakpoint-up(large) {
+  .mobile-large {
+    display: none !important;
+  }
+}

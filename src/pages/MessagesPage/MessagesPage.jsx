@@ -6,6 +6,7 @@ import TitleTab from "../../components/TitleTab/TitleTab";
 
 import "./messagespage.scss";
 import ConversationMessages from "../../components/Conversations/ConversationMessages/ConversationMessages";
+import SendMessage from "../../components/Conversations/SendMessage/SendMessage";
 
 const MessagesPage = () => {
   let dummyData = [
@@ -36,10 +37,11 @@ const MessagesPage = () => {
           <TitleTab title="Messages" />
           <Conversations />
         </div>
-        <div className="desktop-messages">
-          <div className="desktop-large">
+        <div className="desktop-messages desktop-large">
+          <div className="desktop">
             <ConversationMessages messages={dummyData} />
           </div>
+          <SendMessage />
         </div>
       </div>
       <Footer />

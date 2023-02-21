@@ -1,6 +1,7 @@
 import React from "react";
 import TitleTab from "../../TitleTab/TitleTab";
 import ConversationMessages from "../ConversationMessages/ConversationMessages";
+import SendMessage from "../SendMessage/SendMessage";
 import "./conversation.scss";
 
 const Conversation = (props) => {
@@ -39,9 +40,10 @@ const Conversation = (props) => {
   ];
 
   return (
-    <div className="conversation-messages-container">
+    <div className="conversation-messages-container mobile-large">
       <TitleTab title="John Doe" onBack={props.onBack} className="mobile" />
       <ConversationMessages messages={dummyData} />
+      <SendMessage />
     </div>
   );
 };
