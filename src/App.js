@@ -52,7 +52,8 @@ function App() {
   const dispatch = useDispatch();
   const [user] = useAuthState(auth);
   const username = useSelector((state) => state.user.username);
-
+  // const chatId = firstId < secondId ? firstId + secondId : secondId + firstId;
+  // console.log(chatId);
   if (user) {
     getUserData(user.uid).then((data) => {
       if (data && data.username) {
