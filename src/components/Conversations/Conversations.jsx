@@ -18,13 +18,17 @@ const Conversations = () => {
   useEffect(() => {
     getFollowingUsers(currentUser).then((users) => {
       setFollowingUsers(users);
-      followingUsers.slice(1).map((followingUser) => {
-        getUserChats(currentUser, followingUser).then((chats) => {
-          setConversations((prev) => [...prev, chats]);
+      users.slice(1).map((followingUser) => {
+        // Changed followingUsers to users
+        getUserChats(currentUser, followingUser.uid).then((chatId) => {
+          // Accessing the uid property of followingUser object
+          setConversations((prev) => [...prev, chatId]);
+          console.log(chatId);
         });
       });
     });
-  }, []);
+  }, [currentUser]); // Added currentUser to the dependency array
+
   // let dummyData = [
   //   {
   //     id: 1,

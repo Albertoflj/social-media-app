@@ -33,6 +33,7 @@ const app = firebase.initializeApp({
 });
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+const user = auth.currentUser;
 
 export const storage = getStorage(app);
 
@@ -586,20 +587,19 @@ export const getUserChats = async (userId, secondUserId) => {
     return chatId;
   } else {
     console.log("Chat does not exist");
-    const userDataPromise = getUserData(secondId);
-    userDataPromise.then((user) => {
-      const result = setDoc(chatRef, {
-        user1: {
-          photoURL: user.photoURL,
-          username: user.username,
-          userId: user.userId,
-        },
-        user2: {
-          photoURL: user.photoURL,
-          username: user.username,
-          userId: user.userId,
-        },
-      });
+    const secondUser = await getUserData(secondId);
+    const firstUser = await getUserData(firstId);
+    await setDoc(doc(db, "chats", chatId), {
+      user1: {
+        photoURL: firstUser.photoURL,
+        username: firstUser.username,
+        userId: firstId,
+      },
+      user2: {
+        photoURL: secondUser.photoURL,
+        username: secondUser.username,
+        userId: secondId,
+      },
     });
     return chatId;
   }
@@ -608,14 +608,21 @@ export const getUserChats = async (userId, secondUserId) => {
 export const getFollowingUsers = async (userId) => {
   const userRef = doc(db, "users", userId);
   const userDoc = await getDoc(userRef);
-  const following = userDoc.data().following;
-  const followingUsers = [];
-  for (let i = 0; i < following.length; i++) {
-    const userRef = doc(db, "users", following[i]);
-    const userDoc = await getDoc(userRef);
-    followingUsers.push(userDoc.data());
+  if (userDoc.exists()) {
+    const following = userDoc.data().following;
+    const followingUsers = [];
+    for (let i = 0; i < following.length; i++) {
+      const userRef = doc(db, "users", following[i]);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        followingUsers.push(userDoc.data());
+      }
+    }
+    return followingUsers;
+  } else {
+    console.log("User does not exist");
+    return [];
   }
-  return followingUsers;
 };
 
 export default app;
