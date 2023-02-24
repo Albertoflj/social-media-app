@@ -22,29 +22,7 @@ const MessagesPage = () => {
 
   const messagesQuery = query(messagesRef, orderBy("timeSent"));
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
-  useEffect(() => {
-    console.log(conversationId);
-  }, [conversationId]);
-  let dummyData = [
-    {
-      id: 1,
-      name: "John Doe",
-      message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      image: "https://picsum.photos/300/300",
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      image: "https://picsum.photos/300/300",
-    },
-    {
-      id: 3,
-      name: "John Doe",
-      message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      image: "https://picsum.photos/300/300",
-    },
-  ];
+
   return (
     <div className="messages-page">
       <Header />

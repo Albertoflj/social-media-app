@@ -3,13 +3,16 @@ import { useState, useEffect } from "react";
 import "./conversations.scss";
 import TitleTab from "../TitleTab/TitleTab";
 import Conversation from "./Conversation/Conversation";
-import { getFollowingUsers, getUserChats } from "../../firebase";
+import { auth, getFollowingUsers, getUserChats } from "../../firebase";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import { getAuth } from "firebase/auth";
 
 const Conversations = (props) => {
   const [messages, setMessages] = useState([]);
   const currentUser = useSelector((state) => state.user.user);
+  // const currentUserWithoutID = getAuth(auth);
+  // const currentUser = currentUserWithoutID.currentUser.uid;
   const [followingUsers, setFollowingUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
@@ -34,40 +37,29 @@ const Conversations = (props) => {
   };
 
   const [showConversation, setShowConversation] = useState(false);
+
   useEffect(() => {
-    getFollowingUsers(currentUser).then((users) => {
-      setFollowingUsers(users);
-      users.slice(1).map((followingUser) => {
-        getUserChats(currentUser, followingUser.uid).then((users) => {
-          console.log(users);
-          setConversations((prevConversations) => [
-            ...prevConversations,
-            users,
-          ]);
+    setConversations([]);
+    if (conversations.length === 0) {
+      getFollowingUsers(currentUser).then((users) => {
+        setFollowingUsers(users);
+        users.slice(1).map((followingUser) => {
+          getUserChats(currentUser, followingUser.uid).then((users) => {
+            setConversations((conversations) => [...conversations, users]);
+            //filter out duplicates
+            setConversations(
+              (prevConversation) =>
+                prevConversation &&
+                prevConversation.filter(
+                  (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+                )
+            );
+          });
         });
       });
-    });
+    }
   }, [currentUser]);
-  // let dummyData = [
-  //   {
-  //     id: 1,
-  //     name: "John Doe",
-  //     message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  //     image: "https://picsum.photos/300/300",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Jane Doe",
-  //     message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  //     image: "https://picsum.photos/300/300",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "John Doe",
-  //     message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  //     image: "https://picsum.photos/300/300",
-  //   },
-  // ];
+
   return (
     <>
       <div className="conversations scrollbar-hidden flex fd-c">
