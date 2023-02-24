@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import "./conversations.scss";
 import TitleTab from "../TitleTab/TitleTab";
 import Conversation from "./Conversation/Conversation";
-import { auth, getFollowingUsers, getUserChats } from "../../firebase";
+import { auth, getUserConversations } from "../../firebase";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
-import { getAuth } from "firebase/auth";
 
 const Conversations = (props) => {
   const [messages, setMessages] = useState([]);
@@ -39,25 +37,18 @@ const Conversations = (props) => {
   const [showConversation, setShowConversation] = useState(false);
 
   useEffect(() => {
-    setConversations([]);
-    if (conversations.length === 0) {
-      getFollowingUsers(currentUser).then((users) => {
-        setFollowingUsers(users);
-        users.slice(1).map((followingUser) => {
-          getUserChats(currentUser, followingUser.uid).then((users) => {
-            setConversations((conversations) => [...conversations, users]);
-            //filter out duplicates
-            setConversations(
-              (prevConversation) =>
-                prevConversation &&
-                prevConversation.filter(
-                  (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-                )
-            );
-          });
-        });
+    getUserConversations(currentUser).then((conversations) => {
+      conversations.map((conversation) => {
+        setConversations((conversations) => [...conversations, conversation]);
+        setConversations(
+          (prevConversation) =>
+            prevConversation &&
+            prevConversation.filter(
+              (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+            )
+        );
       });
-    }
+    });
   }, [currentUser]);
 
   return (
@@ -87,26 +78,42 @@ const Conversations = (props) => {
                   return null;
                 } else {
                   return (
-                    <>
+                    <React.Fragment
+                      key={`conversationUser-${index2}-${conversationUser.userId}`}
+                    >
                       <img
-                        key={`conversationPhoto-${index2}-${conversationUser.userId}`}
                         src={conversationUser.photoURL}
                         alt={conversationUser.username}
+                        key={`conversationPhoto-${index2}-${conversationUser.userId}`}
                       />
                       <div
                         className="conversation-info"
-                        key={`conversation-${index2}-${conversationUser.userId}`}
+                        key={`conversationInfo-${index2}-${conversationUser.userId}`}
                       >
-                        <h3>{conversationUser.username}</h3>
-                        <p>{conversation.lastMessage}</p>
+                        <h3
+                          key={`conversationUserName-${index2}-${conversationUser.userId}`}
+                        >
+                          {conversationUser.username}
+                        </h3>
+                        <p
+                          key={`conversationLastMessage-${index2}-${conversationUser.userId}`}
+                        >
+                          {conversation.lastMessage.length > 40
+                            ? conversation.lastMessage.slice(0, 40) + "..."
+                            : conversation.lastMessage}
+                        </p>
                       </div>
-                    </>
+                    </React.Fragment>
                   );
                 }
               })}
             </div>
           );
         })}
+        <p className="acces-conv-warning padding">
+          In order to access conversations with a user, you must first follow
+          them.
+        </p>
       </div>
       {showConversation && (
         <Conversation
@@ -114,6 +121,7 @@ const Conversations = (props) => {
             setShowConversation(false);
           }}
           conversationId={conversationId}
+          key={`conversation-${conversationId}`}
         />
       )}
     </>

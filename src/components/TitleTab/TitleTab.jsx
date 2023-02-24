@@ -9,11 +9,11 @@ const TitleTab = (props) => {
     <div className="title-tab padding flex jc-c">
       <div className="title-tab-content flex fd-r jc-c ai-c ">
         {/* arrow icon here */}
-        <button className="mobile flex jc-c ai-c" onClick={props.onBack}>
+        <button className="mobile-large flex jc-c ai-c" onClick={props.onBack}>
           <img src={backArrow}></img>
         </button>
         {/* User Profile Photo */}
-        <img src={userPhoto} alt="" className="desktop" />
+        <img src={userPhoto} alt="" className="desktop-large" />
         {/* Title */}
         <h3>{props.title}</h3>
         <img className="vsn" src={backArrow}></img>

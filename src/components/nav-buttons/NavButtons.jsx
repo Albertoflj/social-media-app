@@ -28,6 +28,8 @@ const NavButtons = (props) => {
   const [homeIcon, setHomeIcon] = useState(homeIconOutline);
   const [chatIcon, setChatIcon] = useState(chatIconOutline);
   const [username, setUsername] = useState("");
+  const currentUser = useSelector((state) => state.user.user);
+  const currentUserPhoto = useSelector((state) => state.user.photoURL);
 
   const [showPostPrompt, setShowPostPrompt] = useState(false);
   const location = useLocation();
@@ -42,9 +44,8 @@ const NavButtons = (props) => {
         setHomeIcon(homeIconOutline);
         break;
     }
-  }, [location.pathname, username]);
+  }, [location.pathname, username, currentUser]);
 
-  //TODO this is a temporary solution, if user is logged in, prompt to post, if not, prompt to sign in
   const checkIfUserIsLoggedIn = (use) => {
     if (user && use === "post") {
       setShowPostPrompt(true);
@@ -55,7 +56,6 @@ const NavButtons = (props) => {
     } else {
       signInWithGoogle((resultUsername) => {
         setUsername(resultUsername);
-        console.log(username);
       });
     }
   };
@@ -69,7 +69,6 @@ const NavButtons = (props) => {
     (state) => state.user.finishedFetching
   );
 
-  //   user ? console.log(user.photoURL) : console.log("user is not logged in");
   return (
     <div className="nav-buttons flex">
       {props.for === "header" ? (
@@ -114,7 +113,6 @@ const NavButtons = (props) => {
         to={user ? `/user/${user.uid}` : location.pathname}
         className="profile-button"
         onClick={() => {
-          // checkIfUserIsLoggedIn("logout");
           if (!checkIfUserIsSignedIn()) {
             signInWithGoogle();
           }
@@ -122,7 +120,7 @@ const NavButtons = (props) => {
       >
         {user ? (
           <img
-            src={user.photoURL}
+            src={currentUserPhoto ? currentUserPhoto : userNotLoggedInIcon}
             alt="profile-photo"
             className="profile-photo"
             referrerPolicy="no-referrer"

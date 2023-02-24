@@ -18,6 +18,8 @@ import {
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
+import { store } from "./redux/store";
+import { setUser, setPhotoURL } from "./redux/userSlice";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -40,6 +42,14 @@ export const storage = getStorage(app);
 //--------------------FOR USERS--------------------
 export const signInWithGoogle = async (callback) => {
   const provider = new GoogleAuthProvider();
+  const currentUserDetails = {
+    message:
+      "Thank you for testing my Instagram Clone platform. I hope you enjoy using it and please feel free to share any feedback or suggestions you may have. If you have any questions, you can contact me directly via Github (https://github.com/Albertoflj) or LinkedIn (https://www.linkedin.com/in/abagiualberto/).",
+    userId: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
+    username: "lezboy",
+    photoURL:
+      "https://lh3.googleusercontent.com/a/AGNmyxY_n5TySjvVbCv8jJgR4C39J_y2DZ2whlum-Vn1=s96-c",
+  };
 
   // check if user is already signed in
   if (localStorage.getItem("signedInWithGoogle") === "true") {
@@ -49,6 +59,11 @@ export const signInWithGoogle = async (callback) => {
 
       getDoc(userRef).then((doc) => {
         if (!doc.exists()) {
+          const chatId =
+            "QahgWcwga4edVwhtJUBsqmDTMlQ2" < user.uid
+              ? "QahgWcwga4edVwhtJUBsqmDTMlQ2" + user.uid
+              : user.uid + "QahgWcwga4edVwhtJUBsqmDTMlQ2";
+
           setDoc(userRef, {
             displayName: user.displayName,
             email: user.email,
@@ -58,10 +73,16 @@ export const signInWithGoogle = async (callback) => {
             followers: [],
             following: [user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2"],
             username:
-              user.displayName.replace(/\s/g, "") +
+              user.displayName.replace(/\s/g, "").toLowerCase() +
               Math.floor(Math.random() * 1000),
             userPosts: [],
+            conversations: [],
           });
+          createChat(user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2", chatId);
+
+          addChatMessage(chatId, currentUserDetails);
+          store.dispatch(setUser(user.uid));
+          store.dispatch(setPhotoURL(user.photoURL));
         }
         callback(user.uid);
       });
@@ -76,7 +97,10 @@ export const signInWithGoogle = async (callback) => {
       .then((result) => {
         localStorage.setItem("signedInWithGoogle", "true");
         const userRef = doc(db, "users", result.user.uid);
-
+        const chatId =
+          "QahgWcwga4edVwhtJUBsqmDTMlQ2" < user.uid
+            ? "QahgWcwga4edVwhtJUBsqmDTMlQ2" + user.uid
+            : user.uid + "QahgWcwga4edVwhtJUBsqmDTMlQ2";
         getDoc(userRef).then((doc) => {
           if (!doc.exists()) {
             setDoc(userRef, {
@@ -91,7 +115,13 @@ export const signInWithGoogle = async (callback) => {
                 result.user.displayName.replace(/\s/g, "").toLowerCase() +
                 Math.floor(Math.random() * 1000),
               userPosts: [],
+              conversations: [],
             });
+
+            createChat(user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2", chatId);
+            addChatMessage(chatId, currentUserDetails);
+            store.dispatch(setUser(user.uid));
+            store.dispatch(setPhotoURL(user.photoURL));
           }
           callback(result.user.uid);
         });
@@ -222,109 +252,6 @@ export const getAllPostsFromSpecificUser = async (userId, callback) => {
     callback([]);
   }
 };
-
-//   // Create a reference to the "posts" collection in the database
-//   const postsCollectionRef = collection(db, "posts");
-
-//   // Create a reference to the document with id "userId" in the "users" collection
-//   const userDocRef = doc(db, "users", userId);
-
-//   // Create a reference to the "users" collection in the database
-//   const usersCollectionRef = collection(db, "users");
-
-//   // Create an empty array to store posts
-//   let posts = [];
-
-//   // Create an object to store a single post
-//   let post = {};
-
-//   // Create an object to store the data of the users
-//   let usersData = {};
-
-//   // Get the document with id "userId" from the "users" collection
-//   getDoc(userDocRef).then((userDoc) => {
-//     // Get the list of users that the current user is following
-//     const followingUsers = userDoc.data().following;
-
-//     // Loop through each following user
-//     followingUsers.forEach((followingUser) => {
-//       // Get the data of the following user
-//       getUserData(followingUser).then((user) => {
-//         // Store the data of the following user
-//         usersData = user;
-//       });
-
-//       // Create a query to get the document of the following user from the "users" collection
-//       const followingUserQuery = query(
-//         usersCollectionRef,
-//         where("uid", "==", followingUser)
-//       );
-
-//       // Get the document of the following user from the "users" collection
-//       getDocs(followingUserQuery).then((followingUserDocs) => {
-//         // Loop through each document of the following user
-//         followingUserDocs.forEach((followingUserDoc) => {
-//           // Get the list of posts by the following user
-//           let followingUserPosts = followingUserDoc.data().userPosts;
-
-//           // Loop through each post by the following user
-//           followingUserPosts.forEach((postId) => {
-//             // Create a reference to the post with id "postId" in the "posts" collection
-//             const postDocRef = doc(db, "posts", postId);
-//             let PID = postId;
-
-//             // Create a reference to the "comments" sub-collection of the post with id "postId"
-//             const postCommentsCollectionRef = collection(
-//               db,
-//               "posts",
-//               postId,
-//               "comments"
-//             );
-
-//             // Get the data of the post with id "postId"
-//             getDoc(postDocRef).then((postDoc) => {
-//               // Store the data of the post
-//               post = postDoc.data();
-
-//               // Initialize the "comments" field for the post
-//               post.comments = {};
-
-//               // Store the data of the creator of the post
-//               post.creator = usersData;
-
-//               // Store the id of the post
-//               post.id = PID;
-//             });
-
-//             getDocs(postCommentsCollectionRef).then((postCommentDocs) => {
-//               //Iterate over each comment document in the collection
-//               let commentCounter = 0;
-//               postCommentDocs.forEach((postCommentDoc) => {
-//                 //Add the comment data to the post object using the commentCounter as the key
-//                 post.comments[commentCounter] = postCommentDoc.data();
-//                 commentCounter++;
-//               });
-//               //Push the post object to the posts array
-//               posts.push(post);
-//               //Reset the post object
-//               post = {};
-
-//               //Check if this is the last post from the current following user
-//             });
-//             if (postId === followingUserPosts[followingUserPosts.length - 1]) {
-//               //Log the posts array
-//               console.log(posts);
-//               //Call the callback function with the posts array as the argument
-//               callback(posts);
-//               //Reset the usersData object
-//               usersData = {};
-//             }
-//           });
-//         });
-//       });
-//     });
-//   });
-// };
 
 export const getPost = (postId, usersData, callback) => {
   // Create an object to store a single post
@@ -511,6 +438,8 @@ export const unfollowUser = async (userId) => {
 };
 
 export const followUser = async (userId) => {
+  const user = auth.currentUser;
+
   const userRef = doc(db, "users", auth.currentUser.uid);
   const result = await getDoc(userRef).then((res) => {
     let following = res.data().following;
@@ -528,6 +457,9 @@ export const followUser = async (userId) => {
       followers: followers,
     });
   });
+
+  const chatId = userId < user.uid ? userId + user.uid : user.uid + userId;
+  createChat(userId, user.uid, chatId);
 
   return result, result2;
 };
@@ -574,7 +506,7 @@ export const searchUsers = async (searchTerm) => {
   return users;
 };
 
-export const getUserChats = async (userId, secondUserId) => {
+export const getFollowingChats = async (userId, secondUserId) => {
   const firstId = userId;
   const secondId = secondUserId;
   const chatId = firstId < secondId ? firstId + secondId : secondId + firstId;
@@ -605,7 +537,65 @@ export const getUserChats = async (userId, secondUserId) => {
 
       lastMessage: "",
     });
+    addUserConversation(firstId, chatId);
+    addUserConversation(secondId, chatId);
     return chatId;
+  }
+};
+export const createChat = async (firstId, secondId, chatId) => {
+  const secondUser = await getUserData(secondId);
+  const firstUser = await getUserData(firstId);
+  await setDoc(doc(db, "chats", chatId), {
+    user1: {
+      photoURL: firstUser.photoURL,
+      username: firstUser.username,
+      userId: firstId,
+    },
+    user2: {
+      photoURL: secondUser.photoURL,
+      username: secondUser.username,
+      userId: secondId,
+    },
+    lastMessage: "",
+    timeCreated: serverTimestamp(),
+  });
+  addUserConversation(firstId, chatId);
+  addUserConversation(secondId, chatId);
+  return chatId;
+};
+
+export const addUserConversation = async (userId, chatId) => {
+  const userRef = doc(db, "users", userId);
+  const userDoc = await getDoc(userRef);
+  if (userDoc.exists()) {
+    const conversations = userDoc.data().conversations;
+    conversations.push(chatId);
+    await updateDoc(userRef, {
+      conversations: conversations,
+    });
+  } else {
+    console.log("User does not exist");
+  }
+};
+export const getUserConversations = async (userId) => {
+  const userRef = doc(db, "users", userId);
+  const userDoc = await getDoc(userRef);
+  if (userDoc.exists()) {
+    const conversations = userDoc.data().conversations;
+    const conversationUsers = [];
+    for (let i = 0; i < conversations.length; i++) {
+      const chatRef = doc(db, "chats", conversations[i]);
+      const chatDoc = await getDoc(chatRef);
+      if (chatDoc.exists()) {
+        const chat = chatDoc.data();
+        chat.id = conversations[i];
+        conversationUsers.push(chat);
+      }
+    }
+    return conversationUsers;
+  } else {
+    console.log("User does not exist");
+    return [];
   }
 };
 
@@ -660,6 +650,12 @@ export const addChatMessage = async (chatId, senderDetails) => {
     name: senderDetails.username,
     photoURL: senderDetails.photoURL,
   });
+  //add last message to chat
+  const chatRef = doc(db, "chats", chatId);
+  const result2 = await updateDoc(chatRef, {
+    lastMessage: senderDetails.message,
+  });
+
   return result;
 };
 

@@ -20,6 +20,7 @@ $conversation-messages-height: 100vh;
   width: 100%;
   gap: 20px;
   overflow-y: scroll;
+  padding-bottom: 30px;
 
   .message {
     display: flex;

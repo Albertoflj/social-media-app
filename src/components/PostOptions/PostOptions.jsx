@@ -3,9 +3,11 @@ import "./postoptions.scss";
 import { useState } from "react";
 import Backdrop from "../Backdrop/Backdrop";
 import { deletePost } from "../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const PostOptions = (props) => {
   const [showOptions, setShowOptions] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     if (showOptions) {
       document.body.style.overflow = "hidden";
@@ -16,6 +18,7 @@ const PostOptions = (props) => {
   const handleDeletePost = () => {
     deletePost(props.post.id).then(() => {
       setShowOptions(false);
+      navigate("/");
       window.location.reload();
     });
   };

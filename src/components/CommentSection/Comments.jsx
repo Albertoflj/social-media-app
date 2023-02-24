@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 
 const Comments = (props) => {
   const [loading, setLoading] = useState(true);
-
-  //  const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
   const postCommentsCollectionRef = collection(
     db,
     "posts",
@@ -26,17 +24,6 @@ const Comments = (props) => {
   const commentsRef = useRef();
 
   useEffect(() => {
-    //NEED TO GET USER DATA AND PUT IT IN EACH COMMENT;
-    //put comments in array
-    // Object.values(comments).map((comment) => {
-    //   getUserData(comment.author).then((data) => {
-    //     console.log(data);
-    //   });
-    // });
-    // getUserData
-    //GET COMMENTS FUNCTION HERE
-    // getComments(props.post.id);
-
     if (commentss) {
       setLoading(false);
     }
