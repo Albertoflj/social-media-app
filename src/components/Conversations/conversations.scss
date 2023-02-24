@@ -42,6 +42,7 @@
     margin-bottom: 0;
     .conversation {
       height: 100px;
+      box-sizing: initial;
       img {
         width: 64px;
         height: 64px;
@@ -53,6 +54,18 @@
   }
 }
 
+.selected-conversation {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  .conversation-info {
+    h3 {
+      color: f.$black;
+    }
+    p {
+      color: f.$black75;
+    }
+  }
+}
 @include breakpoint-up(large) {
   //   .conversations {
   //     .conversation {

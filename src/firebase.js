@@ -583,8 +583,10 @@ export const getUserChats = async (userId, secondUserId) => {
   const chatRef = doc(db, "chats", chatId);
   const chatDoc = await getDoc(chatRef);
   if (chatDoc.exists()) {
-    console.log("Chat exists!");
-    return chatId;
+    // console.log(chatDoc.data());
+    const chat = chatDoc.data();
+    chat.id = chatId;
+    return chat;
   } else {
     console.log("Chat does not exist");
     const secondUser = await getUserData(secondId);
@@ -600,6 +602,8 @@ export const getUserChats = async (userId, secondUserId) => {
         username: secondUser.username,
         userId: secondId,
       },
+
+      lastMessage: "",
     });
     return chatId;
   }
@@ -623,6 +627,40 @@ export const getFollowingUsers = async (userId) => {
     console.log("User does not exist");
     return [];
   }
+};
+
+export const getConversationMessages = async (chatId) => {
+  const messagesRef = collection(
+    db,
+    "conversationMessages",
+    chatId,
+    "messages"
+  );
+  const messagesQuery = query(messagesRef, orderBy("timeSent"));
+  const querySnapshot = await getDocs(messagesQuery);
+  const messages = [];
+  querySnapshot.forEach((doc) => {
+    messages.push({ id: doc.id, ...doc.data() });
+  });
+  return messages;
+};
+
+export const addChatMessage = async (chatId, senderDetails) => {
+  const messagesRef = collection(
+    db,
+    "conversationMessages",
+    chatId,
+    "messages"
+  );
+  const result = await addDoc(messagesRef, {
+    // message: "yessirrr",
+    message: senderDetails.message,
+    timeSent: new Date(),
+    sender: senderDetails.userId,
+    name: senderDetails.username,
+    photoURL: senderDetails.photoURL,
+  });
+  return result;
 };
 
 export default app;

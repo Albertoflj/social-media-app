@@ -5,30 +5,49 @@ import TitleTab from "../TitleTab/TitleTab";
 import Conversation from "./Conversation/Conversation";
 import { getFollowingUsers, getUserChats } from "../../firebase";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 
-const Conversations = () => {
+const Conversations = (props) => {
   const [messages, setMessages] = useState([]);
   const currentUser = useSelector((state) => state.user.user);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
-  const handleConversationClick = () => {
+  const [conversationId, setConversationId] = useState("");
+  const [activeConversationId, setActiveConversationId] = useState(null);
+
+  const handleConversationClick = (conversation) => {
     setShowConversation(true);
+    setConversationId(conversation.id);
+    props.onConversationClick(conversation.id);
+
+    if (activeConversationId !== null) {
+      const prevConversation = document.getElementById(
+        `conversation-${activeConversationId}`
+      );
+      prevConversation.classList.remove("selected-conversation");
+    }
+    const currentConversation = document.getElementById(
+      `conversation-${conversation.id}`
+    );
+    currentConversation.classList.add("selected-conversation");
+    setActiveConversationId(conversation.id);
   };
+
   const [showConversation, setShowConversation] = useState(false);
   useEffect(() => {
     getFollowingUsers(currentUser).then((users) => {
       setFollowingUsers(users);
       users.slice(1).map((followingUser) => {
-        // Changed followingUsers to users
-        getUserChats(currentUser, followingUser.uid).then((chatId) => {
-          // Accessing the uid property of followingUser object
-          setConversations((prev) => [...prev, chatId]);
-          console.log(chatId);
+        getUserChats(currentUser, followingUser.uid).then((users) => {
+          console.log(users);
+          setConversations((prevConversations) => [
+            ...prevConversations,
+            users,
+          ]);
         });
       });
     });
-  }, [currentUser]); // Added currentUser to the dependency array
-
+  }, [currentUser]);
   // let dummyData = [
   //   {
   //     id: 1,
@@ -51,22 +70,48 @@ const Conversations = () => {
   // ];
   return (
     <>
-      <div className="conversations scrollbar-hidden flex fd-c padding">
-        {conversations.slice(1).map((conversation) => {
+      <div className="conversations scrollbar-hidden flex fd-c">
+        {conversations.map((conversation, index) => {
+          const conversationId = `conversation-${conversation.id}`;
           return (
             <div
-              key={conversation.uid}
-              className="conversation flex fd-r ai-c"
+              key={conversationId}
+              className={`conversation padding flex fd-r ai-c${
+                index === 0 ? " active" : ""
+              }`}
               role="button"
               tabIndex="0"
               aria-pressed="false"
-              onClick={handleConversationClick}
+              onClick={() => {
+                handleConversationClick(conversation);
+              }}
+              id={conversationId}
             >
-              <img src={conversation.photoURL} alt={conversation.username} />
-              <div className="conversation-info">
-                <h3>{conversation.username}</h3>
-                <p>{conversation.message}</p>
-              </div>
+              {Object.values(conversation).map((conversationUser, index2) => {
+                if (
+                  conversationUser.userId === currentUser ||
+                  !conversationUser.hasOwnProperty("username")
+                ) {
+                  return null;
+                } else {
+                  return (
+                    <>
+                      <img
+                        key={`conversationPhoto-${index2}-${conversationUser.userId}`}
+                        src={conversationUser.photoURL}
+                        alt={conversationUser.username}
+                      />
+                      <div
+                        className="conversation-info"
+                        key={`conversation-${index2}-${conversationUser.userId}`}
+                      >
+                        <h3>{conversationUser.username}</h3>
+                        <p>{conversation.lastMessage}</p>
+                      </div>
+                    </>
+                  );
+                }
+              })}
             </div>
           );
         })}
@@ -76,6 +121,7 @@ const Conversations = () => {
           onBack={() => {
             setShowConversation(false);
           }}
+          conversationId={conversationId}
         />
       )}
     </>
