@@ -57,11 +57,10 @@ const Post = (props) => {
       if (checkIfUserIsSignedIn()) {
         sendLike(user, post.id).then(() => {
           setIsLiked(!isLiked);
-          setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+          const newLikesCount = isLiked ? likesCount - 1 : likesCount + 1;
+          setLikesCount(newLikesCount);
           setLikesCaption(
-            `${isLiked ? likesCount - 1 : likesCount + 1} ${
-              isLiked ? "like" : "likes"
-            }`
+            `${newLikesCount} ${newLikesCount === 1 ? "like" : "likes"}`
           );
         });
       } else {
@@ -71,11 +70,10 @@ const Post = (props) => {
       if (checkIfUserIsSignedIn()) {
         sendLike(user, postid).then(() => {
           setIsLiked(!isLiked);
-          setLikesCount(isLiked ? likesCount - 1 : likesCount + 1); // check if user is liking or unliking
+          const newLikesCount = isLiked ? likesCount - 1 : likesCount + 1;
+          setLikesCount(newLikesCount);
           setLikesCaption(
-            `${isLiked ? likesCount - 1 : likesCount + 1} ${
-              isLiked ? "like" : "likes"
-            }`
+            `${newLikesCount} ${newLikesCount === 1 ? "like" : "likes"}`
           );
         });
       } else {
