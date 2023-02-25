@@ -10,6 +10,12 @@ import { collection, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebase";
 
 const Conversation = (props) => {
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("no-scroll");
+      document.body.style.overflowY = "scroll";
+    };
+  }, []);
   // console.log(props.conversationId);
   const messagesRef = collection(
     db,

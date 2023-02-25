@@ -84,7 +84,7 @@ a {
 }
 .no-scroll {
   position: relative;
-  overflow: hidden;
+  overflow: hidden !important;
   touch-action: none;
   -ms-touch-action: none;
 }
@@ -97,6 +97,12 @@ input[type="text"] {
   box-shadow: none;
   //!! TODO: Change to color from figma
   border: 1px black solid;
+}
+
+.stick {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 input[type="text"]:focus {
   border: none;
