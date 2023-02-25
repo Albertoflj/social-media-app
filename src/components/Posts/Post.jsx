@@ -40,6 +40,7 @@ const Post = (props) => {
   const comments = (object, forCount) => {
     let count = object.commentsLength;
     let phrase = "";
+    console.log(object.commentsLength);
     if (count > 1) {
       phrase = `View all ${count} comments`;
     } else if (count === 1) {

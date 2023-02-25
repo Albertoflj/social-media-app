@@ -33,7 +33,6 @@ const Posts = () => {
     if (user) {
       setUserExists(true);
       getFollowingPosts(user.uid, (followingPosts) => {
-        // console.log(followingPosts);
         if (followingPosts) {
           setPosts((prevPosts) => {
             const newPosts = followingPosts.filter(

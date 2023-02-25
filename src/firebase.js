@@ -15,6 +15,7 @@ import {
   deleteDoc,
   startAt,
   endAt,
+  increment,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
@@ -336,6 +337,10 @@ export const sendComment = async (
     author_photo: userPhoto,
     text: comment,
     createdAt: serverTimestamp(),
+  });
+  const postRef = doc(db, "posts", postId);
+  updateDoc(postRef, {
+    commentsLength: increment(1),
   });
 
   return result;
