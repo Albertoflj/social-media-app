@@ -291,7 +291,7 @@ export const getPost = (postId, usersData, callback) => {
               post.comments[commentCounter] = postCommentDoc.data();
               commentCounter++;
             });
-            post.commentsLength = commentCounter;
+
             callback(post);
           });
         } else {
@@ -306,7 +306,7 @@ export const getPost = (postId, usersData, callback) => {
                 post.comments[commentCounter] = postCommentDoc.data();
                 commentCounter++;
               });
-              post.commentsLength = commentCounter;
+              // post.commentsLength = commentCounter;
               callback(post);
             });
           });
@@ -396,6 +396,7 @@ export const createPost = async (post) => {
     photo: post.image,
     likedBy: [],
     createdAt: serverTimestamp(),
+    commentsLength: 0,
   });
   const userRef = doc(db, "users", auth.currentUser.uid);
   getUserData(auth.currentUser.uid).then((user) => {
