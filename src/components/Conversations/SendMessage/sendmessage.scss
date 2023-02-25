@@ -1,10 +1,13 @@
+@import "../../../main-styles/mixins.scss";
+
 .send-message {
-  //   position: absolute;
-  bottom: 70px;
-  //   height: 30px;
+  position: fixed;
+  bottom: 50px;
+  z-index: 99;
   background-color: white;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
+
   padding: 0px 20px;
   button {
     width: 32px;
@@ -24,4 +27,11 @@
   width: 100%;
   padding: 0 30px;
   text-align: left;
+  margin-bottom: 10px; /* reduce margin bottom to make space for footer */
+}
+
+@include breakpoint-up(medium) {
+  .send-message {
+    position: relative;
+  }
 }
