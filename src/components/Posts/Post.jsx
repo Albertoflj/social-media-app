@@ -113,7 +113,7 @@ const Post = (props) => {
   const handleShowComments = (device) => {
     if (checkIfUserIsSignedIn) {
       if (device === "mobile") {
-        document.body.style.overflowY = "hidden";
+        document.body.classList.add("no-scroll");
         setShowComments("comments-visible");
       }
     } else {

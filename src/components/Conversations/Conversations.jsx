@@ -20,6 +20,7 @@ const Conversations = (props) => {
     setShowConversation(true);
     setConversationId(conversation.id);
     props.onConversationClick(conversation.id);
+    document.body.classList.add("no-scroll");
 
     if (activeConversationId !== null) {
       const prevConversation = document.getElementById(

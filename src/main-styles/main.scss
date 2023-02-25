@@ -82,6 +82,12 @@ a {
 }
 a {
 }
+.no-scroll {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  -ms-touch-action: none;
+}
 a:visited {
   text-decoration: none;
   color: inherit;

@@ -32,6 +32,7 @@
 
 @include breakpoint-up(medium) {
   .send-message {
+    bottom: 0;
     position: relative;
   }
 }

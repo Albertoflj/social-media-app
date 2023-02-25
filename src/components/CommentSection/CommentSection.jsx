@@ -17,10 +17,16 @@ const CommentSection = (props) => {
   const [commentsPos, setCommentsPos] = useState("comments-visible");
 
   const commentRef = useRef();
-
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("no-scroll");
+      document.body.style.overflowY = "scroll";
+    };
+  }, []);
   function onbacc() {
     //make timeout
     setCommentsPos("comments-hidden");
+    document.body.classList.remove("no-scroll");
     document.body.style.overflowY = "scroll";
 
     setTimeout(() => {
