@@ -222,15 +222,17 @@ const Post = (props) => {
                 </div>
 
                 {/* view comments */}
-                <Link to={`/post/${post.id}`} className="desktop flex jc-fs">
-                  <p
-                    className="view-comments"
-                    onClick={() => {
-                      handleShowComments("PC");
-                    }}
-                  >
-                    {comments(post, false)}
-                  </p>
+                <Link to={`/post/${post.id}`} className=" desktop flex jc-fs">
+                  {comments(post, false) && (
+                    <p
+                      className="view-comments"
+                      onClick={() => {
+                        handleShowComments("PC");
+                      }}
+                    >
+                      {comments(post, false)}
+                    </p>
+                  )}
                 </Link>
                 <button
                   className="mobile view-comments"
