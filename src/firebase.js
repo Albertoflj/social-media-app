@@ -21,6 +21,7 @@ import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 import { store } from "./redux/store";
 import { setUser, setPhotoURL } from "./redux/userSlice";
+import { ref, deleteObject } from "firebase/storage";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -394,6 +395,7 @@ export const createPost = async (post) => {
     caption: post.caption,
     user: post.user,
     photo: post.image,
+    photoLocation: post.imageLocation,
     likedBy: [],
     createdAt: serverTimestamp(),
     commentsLength: 0,
@@ -472,6 +474,13 @@ export const followUser = async (userId) => {
 
 export const deletePost = async (postId) => {
   const postRef = doc(db, "posts", postId);
+  //delete image from storage
+  const result3 = await getDoc(postRef).then((res) => {
+    const photo = res.data().photoLocation;
+    const storageRef = ref(storage, photo);
+    deleteObject(storageRef);
+  });
+
   const result = await deleteDoc(postRef);
   // remove post from user's posts list
   const userRef = doc(db, "users", auth.currentUser.uid);

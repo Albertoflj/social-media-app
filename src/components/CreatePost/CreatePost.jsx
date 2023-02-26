@@ -5,7 +5,6 @@ import { useState } from "react";
 import { auth, createPost, storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uuidv4 } from "@firebase/util";
-import { useSelector } from "react-redux";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const CreatePost = (props) => {
@@ -33,18 +32,19 @@ const CreatePost = (props) => {
       return;
     }
     if (!validateImage(image)) return;
-    const imageRef = ref(storage, `images/${image.name + uuidv4()}`);
+    let imgLoc = `images/${image.name + uuidv4()}`;
+    const imageRef = ref(storage, imgLoc);
     uploadBytes(imageRef, image).then((snapshot) => {
       getDownloadURL(imageRef).then((url) => {
         let post = {
           caption: caption,
           user: user.uid,
           image: url,
+          imageLocation: imgLoc,
           likedBy: [],
         };
         createPost(post);
         props.onSuccess();
-        // window.location.reload();
       });
     });
   };
@@ -78,7 +78,6 @@ const CreatePost = (props) => {
                 type="file"
                 onChange={(event) => {
                   setImage(event.target.files[0]);
-                  console.log("image: ", image);
                   setImageText("Image added");
                   setErrorClass("success");
                 }}
@@ -100,7 +99,6 @@ const CreatePost = (props) => {
                 className={`caption `}
                 onChange={(event) => {
                   setCaption(event.target.value);
-                  console.log("caption: ", caption);
                 }}
               />
             </div>

@@ -15,7 +15,6 @@ import {
 } from "../../firebase";
 import CommentSection from "../CommentSection/CommentSection";
 import Footer from "../Footer/Footer";
-import { render } from "enzyme";
 import { useSelector } from "react-redux";
 import Header from "../Header/Header";
 import CommentInput from "../CommentSection/CommentInput";
@@ -23,9 +22,6 @@ import Comments from "../CommentSection/Comments";
 import PostOptions from "../PostOptions/PostOptions";
 const Post = (props) => {
   let feed = props.for;
-  //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
-  //TODO MAKE THIS A COMPONENT THAT SHOW DIFFERENTLY ON FEED AND POST PAGE
-  //declaring
 
   const [post, setPost] = useState(props.post);
   const [loading, setLoading] = useState(true);
@@ -40,7 +36,6 @@ const Post = (props) => {
   const comments = (object, forCount) => {
     let count = object.commentsLength;
     let phrase = "";
-    console.log(object.commentsLength);
     if (count > 1) {
       phrase = `View all ${count} comments`;
     } else if (count === 1) {
@@ -83,7 +78,6 @@ const Post = (props) => {
     }
   };
 
-  // const [post, setPost] = useState(props.post);
   useEffect(() => {
     if (postid) {
       setIsIndividualPost(true);
