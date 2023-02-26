@@ -47,9 +47,9 @@ export const signInWithGoogle = async (callback) => {
     message:
       "Thank you for testing my Instagram Clone platform. I hope you enjoy using it and please feel free to share any feedback or suggestions you may have. If you have any questions, you can contact me directly via Github (https://github.com/Albertoflj) or LinkedIn (https://www.linkedin.com/in/abagiualberto/).",
     userId: "QahgWcwga4edVwhtJUBsqmDTMlQ2",
-    username: "lezboy",
+    username: "alberto",
     photoURL:
-      "https://lh3.googleusercontent.com/a/AGNmyxY_n5TySjvVbCv8jJgR4C39J_y2DZ2whlum-Vn1=s96-c",
+      "https://firebasestorage.googleapis.com/v0/b/social-media-app-133db.appspot.com/o/images%2F1668339088910.jpg4cf04219-9598-4434-a9e1-dedfd8baed6f?alt=media&token=9c4343d4-aada-41f6-aa04-98dbe1c06043",
   };
 
   // check if user is already signed in
