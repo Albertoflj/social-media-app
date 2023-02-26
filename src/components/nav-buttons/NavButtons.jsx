@@ -1,7 +1,6 @@
 import chatIconOutline from "../../assets/icons/chat-dots.svg";
 import chatIconFill from "../../assets/icons/chat-dots-fill.svg";
 import postIconOutline from "../../assets/icons/plus-square.svg";
-import postIconFill from "../../assets/icons/plus-square-fill.svg";
 import homeIconOutline from "../../assets/icons/house-door.svg";
 import homeIconFill from "../../assets/icons/house-door-fill.svg";
 import userNotLoggedInIcon from "../../assets/icons/person.svg";
@@ -19,8 +18,6 @@ import {
 } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import UsernamePrompt from "../UsernamePrompt/UsernamePrompt";
-import { checkIfUserHasUsername } from "../../firebase";
 import CreatePost from "../CreatePost/CreatePost";
 import Backdrop from "../Backdrop/Backdrop";
 
@@ -50,7 +47,6 @@ const NavButtons = (props) => {
     if (user && use === "post") {
       setShowPostPrompt(true);
       document.body.style.overflowY = "hidden";
-      // signOut();
     } else if (user && use === "logout") {
       signOut();
     } else {
@@ -135,18 +131,6 @@ const NavButtons = (props) => {
           <Backdrop onCancel={onCancel} />
         </>
       ) : null}
-      {/* <CreatePost onSuccess={onCancel} /> */}
-      {
-        //if user is logged in, check if they have a username, if not, prompt them to create one
-        // user && !reduxUsername && reduxFinishedFetching ? (
-        //   <UsernamePrompt username={reduxUsername} />
-        // ) : null
-        // setTimeout(() => {
-        //   if (user && !reduxUsername && reduxFinishedFetching) {
-        //     <UsernamePrompt username={reduxUsername} />;
-        //   }
-        // }, 1000)
-      }
     </div>
   );
 };
