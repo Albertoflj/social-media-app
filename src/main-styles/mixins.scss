@@ -1,23 +1,23 @@
 @media (min-width: 64em) {
 }
 
-//861x, 1131px, 1221px, 1400px
+//861x, 70.6875rem, 76.3125rem, 87.5rem
 $breakpoints-up: (
-  "x-small": "401px",
-  "small": "576px",
-  "medium": "768px",
-  "large": "992px",
-  "extra-large": "1200px",
-  "extra-extra-large": "1400px",
+  "x-small": "25.0625rem",
+  "small": "36rem",
+  "medium": "48rem",
+  "large": "62rem",
+  "extra-large": "75rem",
+  "extra-extra-large": "87.5rem",
 );
-//375px, 860px, 1130px, 1220px, 1399px
+//23.4375rem, 53.75rem, 70.625rem, 76.25rem, 87.4375rem
 $breakpoints-down: (
-  "s-small": "400px",
-  "small": "575px",
-  "medium": "767px",
-  "large": "991px",
-  "extra-large": "1199px",
-  "extra-extra-large": "1399px",
+  "s-small": "25rem",
+  "small": "35.9375rem",
+  "medium": "47.9375rem",
+  "large": "61.9375rem",
+  "extra-large": "74.9375rem",
+  "extra-extra-large": "87.4375rem",
 );
 
 @mixin breakpoint-up($size) {
