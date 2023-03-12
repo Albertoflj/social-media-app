@@ -55,6 +55,9 @@ const ProfilePage = () => {
           });
         });
       }
+      console.log(data.followers);
+      console.log(currentUser);
+      console.log(data.followers.includes(currentUser));
 
       if (data.followers.includes(currentUser)) {
         setFollowingUser(true);

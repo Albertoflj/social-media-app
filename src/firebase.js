@@ -73,7 +73,7 @@ export const signInWithGoogle = async (callback) => {
             uid: user.uid,
             bio: "Hi! I'm new here.",
             followers: [],
-            following: [user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2"],
+            following: [user.uid],
             username:
               user.displayName.replace(/\s/g, "").toLowerCase() +
               Math.floor(Math.random() * 1000),
@@ -85,6 +85,7 @@ export const signInWithGoogle = async (callback) => {
           addChatMessage(chatId, currentUserDetails);
           store.dispatch(setUser(user.uid));
           store.dispatch(setPhotoURL(user.photoURL));
+          followUser("QahgWcwga4edVwhtJUBsqmDTMlQ2");
         }
         callback(user.uid);
       });
@@ -112,7 +113,7 @@ export const signInWithGoogle = async (callback) => {
               uid: result.user.uid,
               bio: "Hi! I'm new here.",
               followers: [],
-              following: [result.user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2"],
+              following: [result.user.uid],
               username:
                 result.user.displayName.replace(/\s/g, "").toLowerCase() +
                 Math.floor(Math.random() * 1000),
@@ -124,6 +125,7 @@ export const signInWithGoogle = async (callback) => {
             addChatMessage(chatId, currentUserDetails);
             store.dispatch(setUser(user.uid));
             store.dispatch(setPhotoURL(user.photoURL));
+            followUser("QahgWcwga4edVwhtJUBsqmDTMlQ2");
           }
           callback(result.user.uid);
         });
