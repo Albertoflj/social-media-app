@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+import { Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import emptyHeart from "../../assets/icons/heart.svg";
 import fullHeart from "../../assets/icons/heart-fill.svg";
@@ -20,6 +21,7 @@ import Header from "../Header/Header";
 import CommentInput from "../CommentSection/CommentInput";
 import Comments from "../CommentSection/Comments";
 import PostOptions from "../PostOptions/PostOptions";
+
 const Post = (props) => {
   let feed = props.for;
 
@@ -205,9 +207,18 @@ const Post = (props) => {
                     </button>
                   </Link>
 
-                  <button className="share-button flex ai-c">
+                  <button
+                    className="share-button flex ai-c"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `https://albertoflj.github.io/social-media-app/#/post/${post.id}`
+                      );
+                      toast.success("Link Copied to Clipboard");
+                    }}
+                  >
                     <img src={sendIcon} alt="share" className="icon" />
                   </button>
+                  <Toaster />
                 </div>
 
                 {/* likes indicator */}
