@@ -6,9 +6,7 @@ import { getUserConversations } from "../../firebase";
 import { useSelector } from "react-redux";
 
 const Conversations = (props) => {
-  const [messages, setMessages] = useState([]);
   const currentUser = useSelector((state) => state.user.user);
-  const [followingUsers, setFollowingUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
   const [activeConversationId, setActiveConversationId] = useState(null);

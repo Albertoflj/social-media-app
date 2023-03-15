@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getConversationMessages } from "../../../firebase";
 import TitleTab from "../../TitleTab/TitleTab";
 import ConversationMessages from "../ConversationMessages/ConversationMessages";
 import SendMessage from "../SendMessage/SendMessage";
 import "./conversation.scss";
-import { doc, onSnapshot } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { collection, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebase";
