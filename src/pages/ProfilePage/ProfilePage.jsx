@@ -55,9 +55,6 @@ const ProfilePage = () => {
           });
         });
       }
-      console.log(data.followers);
-      console.log(currentUser);
-      console.log(data.followers.includes(currentUser));
 
       if (data.followers.includes(currentUser)) {
         setFollowingUser(true);
@@ -65,7 +62,14 @@ const ProfilePage = () => {
 
       setLoading(false);
     });
-  }, [user, currentUser, showEditProfile, pageUser.userId, pageUser]);
+  }, [
+    user,
+    currentUser,
+    showEditProfile,
+    pageUser.userId,
+    pageUser,
+    followingUser,
+  ]);
 
   const handleUnfollow = () => {
     unfollowUser(user).then(() => {

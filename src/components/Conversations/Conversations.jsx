@@ -1,16 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import "./conversations.scss";
-import TitleTab from "../TitleTab/TitleTab";
 import Conversation from "./Conversation/Conversation";
-import { auth, getUserConversations } from "../../firebase";
+import { getUserConversations } from "../../firebase";
 import { useSelector } from "react-redux";
 
 const Conversations = (props) => {
   const [messages, setMessages] = useState([]);
   const currentUser = useSelector((state) => state.user.user);
-  // const currentUserWithoutID = getAuth(auth);
-  // const currentUser = currentUserWithoutID.currentUser.uid;
   const [followingUsers, setFollowingUsers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");

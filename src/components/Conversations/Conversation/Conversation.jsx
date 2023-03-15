@@ -16,7 +16,7 @@ const Conversation = (props) => {
       document.body.style.overflowY = "scroll";
     };
   }, []);
-  // console.log(props.conversationId);
+
   const messagesRef = collection(
     db,
     "conversationMessages",
