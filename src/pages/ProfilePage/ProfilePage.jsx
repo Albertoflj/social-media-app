@@ -104,15 +104,15 @@ const ProfilePage = () => {
               <div className="activity-stats flex ">
                 <div className="post-count">
                   <h2>{userData.userPosts.length}</h2>
-                  <h1>Posts</h1>
+                  <button className="posts-button">Posts</button>
                 </div>
                 <div className="following-count">
                   <h2>{userData.following.length - 1}</h2>
-                  <h1>Following</h1>
+                  <button>Following</button>
                 </div>
                 <div className="follower-count">
                   <h2>{userData.followers.length}</h2>
-                  <h1>Followers</h1>
+                  <button>Followers</button>
                 </div>
               </div>
 

@@ -57,9 +57,15 @@
             margin: 0;
           }
 
-          h1 {
+          h1,
+          button {
             font-size: 1.125rem;
             margin: 0;
+            font-weight: bold;
+            padding: 0;
+          }
+          .posts-button {
+            cursor: default;
           }
         }
       }

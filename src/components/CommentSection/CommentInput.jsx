@@ -7,7 +7,6 @@ import {
 import "./commentsection.scss";
 import sendIcon from "../../assets/icons/send.svg";
 import { useRef } from "react";
-import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const CommentInput = (props) => {
@@ -16,7 +15,6 @@ const CommentInput = (props) => {
   const commentRef = useRef();
   const user = useSelector((state) => state.user);
   const userPhoto = useSelector((state) => state.user.photoURL);
-
   async function submitComment(e) {
     e.preventDefault();
     let comment = commentRef.current.value;

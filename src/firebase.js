@@ -20,7 +20,12 @@ import {
 import { getStorage } from "firebase/storage";
 import { collection, doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 import { store } from "./redux/store";
-import { setUser, setPhotoURL } from "./redux/userSlice";
+import {
+  setUser,
+  setPhotoURL,
+  setUsername,
+  setDisplayName,
+} from "./redux/userSlice";
 import { ref, deleteObject } from "firebase/storage";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -83,7 +88,8 @@ export const signInWithGoogle = async (callback) => {
           createChat(user.uid, "QahgWcwga4edVwhtJUBsqmDTMlQ2", chatId);
 
           addChatMessage(chatId, currentUserDetails);
-          store.dispatch(setUser(user.uid));
+          store.dispatch(setUsername(user.uid));
+          store.dispatch(setDisplayName(user.displayName));
           store.dispatch(setPhotoURL(user.photoURL));
           followUser("QahgWcwga4edVwhtJUBsqmDTMlQ2");
         }
