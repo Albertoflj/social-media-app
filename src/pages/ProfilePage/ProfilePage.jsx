@@ -7,6 +7,7 @@ import EditProfile from "../../components/EditProfile/EditProfile";
 import FollowUnfollowButton from "../../components/FollowUnfollowButton/FollowUnfollowButton";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import FollowPanel from "../../components/FollowPanel/FollowPanel";
 import {
   auth,
   followUser,
@@ -27,6 +28,8 @@ const ProfilePage = () => {
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showFollowPanel, setShowFollowPanel] = useState(false);
+  const [followPanelCategory, setFollowPanelCategory] = useState("following");
   const [followingUser, setFollowingUser] = useState(false);
 
   useEffect(() => {
@@ -87,6 +90,17 @@ const ProfilePage = () => {
         <>Loading</>
       ) : (
         <div className="profile-container flex fd-c ai-c">
+          {showFollowPanel && (
+            <>
+              <FollowPanel
+                followers={userData.followers}
+                following={userData.following}
+                category={followPanelCategory}
+                onExit={() => setShowFollowPanel(false)}
+              />
+              <Backdrop onCancel={() => setShowFollowPanel(false)} />
+            </>
+          )}
           <div className="profile-details flex fd-c ai-c">
             <div className="avatar-info">
               <img
@@ -108,14 +122,27 @@ const ProfilePage = () => {
                 </div>
                 <div className="following-count">
                   <h2>{userData.following.length - 1}</h2>
-                  <button>Following</button>
+                  <button
+                    onClick={() => {
+                      setFollowPanelCategory("following");
+                      setShowFollowPanel(true);
+                    }}
+                  >
+                    Following
+                  </button>
                 </div>
                 <div className="follower-count">
                   <h2>{userData.followers.length}</h2>
-                  <button>Followers</button>
+                  <button
+                    onClick={() => {
+                      setFollowPanelCategory("followers");
+                      setShowFollowPanel(true);
+                    }}
+                  >
+                    Followers
+                  </button>
                 </div>
               </div>
-
               {currentUserPage ? (
                 <div className="edit-logout flex fd-r ai-c">
                   <button
@@ -145,6 +172,7 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
+
           <div className="user-post-gallery flex fd-r">
             {userPosts ? (
               userPosts.map((post) => {

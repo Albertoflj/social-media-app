@@ -1,0 +1,88 @@
+@use "../../main-styles/main.scss" as f;
+.follow-panel {
+  box-sizing: border-box;
+  // margin: 16px;
+  .selected-follow {
+    color: f.$black !important;
+  }
+  position: fixed;
+  z-index: 100;
+  max-width: 600px;
+  width: 90%;
+  min-height: 500px;
+  background-color: white;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  .follow-menu {
+    justify-content: space-between;
+    .x-icon {
+      width: 32px;
+      height: 32px;
+      img {
+        height: 28px;
+        width: 28px;
+      }
+    }
+  }
+  .follow-list {
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: scroll;
+    .follow-user {
+      justify-content: space-between;
+      .user-profile-left-side {
+        .image-placeholder {
+          height: 42px;
+          width: 42px;
+          background-color: grey;
+          border-radius: 50%;
+        }
+        .user-names {
+          margin-left: 10px;
+          h3 {
+            font-size: 16px;
+            font-weight: bold;
+            font-family: "Inter", sans-serif;
+            color: f.$black;
+            margin: 0;
+          }
+          h4 {
+            margin: 0;
+            font-size: 14px;
+            font-family: "JUST Sans";
+            font-weight: 400;
+            color: f.$black75;
+          }
+        }
+      }
+      .follow-button,
+      .unfollow-button {
+        margin-top: 0;
+        max-width: 120px;
+        height: 32px;
+        font-size: 14px;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .follow-unfollow {
+    margin: 20px;
+    margin-left: 0px;
+
+    .follow-select {
+      font-family: "Inter", sans-serif;
+      font-weight: bold;
+      font-size: 20px;
+      color: f.$black75;
+    }
+    .follow-followers {
+      margin-left: 5px;
+    }
+  }
+}

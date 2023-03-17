@@ -81,6 +81,7 @@ const Conversations = (props) => {
                         src={conversationUser.photoURL}
                         alt={conversationUser.username}
                         key={`conversationPhoto-${index2}-${conversationUser.userId}`}
+                        referrerPolicy="no-referrer"
                       />
                       <div
                         className="conversation-info"

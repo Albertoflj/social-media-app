@@ -1,5 +1,6 @@
 import React from "react";
 import { checkIfUserIsSignedIn, signInWithGoogle } from "../../firebase";
+import "./followunfollowbuttons.scss";
 
 const FollowUnfollowButton = (props) => {
   return (

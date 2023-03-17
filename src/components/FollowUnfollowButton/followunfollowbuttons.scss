@@ -1,0 +1,33 @@
+.follow-button {
+  margin-top: 2.5rem;
+  background-color: #008cba;
+  color: white;
+  padding: 0.625rem;
+  max-width: 12.5rem;
+  width: 100%;
+  border-radius: 3.125rem;
+  font-size: 1.125rem;
+  height: 2.8125rem;
+  &:hover {
+    background-color: #0077a7;
+    cursor: pointer;
+  }
+}
+.unfollow-button {
+  margin-top: 2.5rem;
+  background-color: #ffffff;
+  color: #008cba;
+  border: 0.125rem solid #008cba;
+  padding: 0.625rem;
+  max-width: 12.5rem;
+  width: 100%;
+  border-radius: 3.125rem;
+  font-size: 1.125rem;
+  position: relative;
+  overflow: hidden;
+  height: 2.8125rem;
+  &:hover {
+    background-color: rgba(0, 135, 186, 0.8);
+    color: #ffffff;
+  }
+}
