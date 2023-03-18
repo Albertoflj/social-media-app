@@ -30,7 +30,7 @@
   .follow-list {
     gap: 10px;
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
     .follow-user {
       justify-content: space-between;
       .user-profile-left-side {

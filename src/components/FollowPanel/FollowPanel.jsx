@@ -123,15 +123,19 @@ const FollowPanel = (props) => {
                       </div>
                     </div>
 
-                    <FollowUnfollowButton
-                      isFollowing={userProfile.followers.includes(currentUser)}
-                      handleFollow={() => {
-                        handleFollow(userProfile.uid);
-                      }}
-                      handleUnfollow={() => {
-                        handleUnfollow(userProfile.uid);
-                      }}
-                    />
+                    {userProfile.uid !== currentUser && (
+                      <FollowUnfollowButton
+                        isFollowing={userProfile.followers.includes(
+                          currentUser
+                        )}
+                        handleFollow={() => {
+                          handleFollow(userProfile.uid);
+                        }}
+                        handleUnfollow={() => {
+                          handleUnfollow(userProfile.uid);
+                        }}
+                      />
+                    )}
                   </div>
                 );
               })}
