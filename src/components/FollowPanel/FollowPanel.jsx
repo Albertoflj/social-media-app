@@ -107,7 +107,10 @@ const FollowPanel = (props) => {
                 return (
                   <div className="follow-user flex fd-r ai-c ">
                     <div className="user-profile-left-side flex fd-r ai-c">
-                      <Link to={`/user/${userProfile.uid}`}>
+                      <Link
+                        to={`/user/${userProfile.uid}`}
+                        onClick={() => props.onExit()}
+                      >
                         <img
                           src={userProfile.photoURL}
                           className="image-placeholder"
@@ -116,7 +119,10 @@ const FollowPanel = (props) => {
                         />
                       </Link>
                       <div className="user-names">
-                        <Link to={`/user/${userProfile.uid}`}>
+                        <Link
+                          to={`/user/${userProfile.uid}`}
+                          onClick={() => props.onExit()}
+                        >
                           <h3>{userProfile.displayName}</h3>
                         </Link>
                         <h4>@{userProfile.username}</h4>
