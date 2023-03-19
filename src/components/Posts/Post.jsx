@@ -21,6 +21,7 @@ import Header from "../Header/Header";
 import CommentInput from "../CommentSection/CommentInput";
 import Comments from "../CommentSection/Comments";
 import PostOptions from "../PostOptions/PostOptions";
+import ImageWithPlaceholder from "../ImageWithPlaceholder/ImageWithPlaceholder";
 
 const Post = (props) => {
   let feed = props.for;
@@ -147,7 +148,7 @@ const Post = (props) => {
                 {props.isCreatorOfPost ? <PostOptions post={post} /> : null}
               </div>
               {/* post photo */}
-              <img
+              <ImageWithPlaceholder
                 src={post.photo}
                 alt="photo"
                 className="post-photo"
