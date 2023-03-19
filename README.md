@@ -26,6 +26,7 @@ SMA is an application modeled after Instagram, developed using the ReactJS frame
 - In-app messaging functionality to send messages to other users
 - Capability to follow and unfollow other users
 - Ability to view the profiles of other users and edit one's own profile details
+- View each user's following and followers
 
 ## Technologies used
 
