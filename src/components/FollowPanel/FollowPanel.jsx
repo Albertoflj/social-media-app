@@ -90,7 +90,7 @@ const FollowPanel = (props) => {
           </div>
           {/* x icon */}
           <button
-            className="x-icon"
+            className="x-icon flex jc-c ai-c"
             onClick={() => {
               props.onExit();
             }}
@@ -105,7 +105,10 @@ const FollowPanel = (props) => {
             <>
               {users.map((userProfile) => {
                 return (
-                  <div className="follow-user flex fd-r ai-c ">
+                  <div
+                    className="follow-user flex fd-r ai-c "
+                    key={userProfile.uid}
+                  >
                     <div className="user-profile-left-side flex fd-r ai-c">
                       <Link
                         to={`/user/${userProfile.uid}`}

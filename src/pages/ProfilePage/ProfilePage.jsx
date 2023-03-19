@@ -64,14 +64,7 @@ const ProfilePage = () => {
 
       setLoading(false);
     });
-  }, [
-    user,
-    currentUser,
-    showEditProfile,
-    pageUser.userId,
-    pageUser,
-    followingUser,
-  ]);
+  }, [user, currentUser, pageUser.userId, pageUser, followingUser]);
 
   const handleUnfollow = () => {
     unfollowUser(user).then(() => {
