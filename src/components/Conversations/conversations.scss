@@ -8,19 +8,20 @@
   margin-bottom: 3.75rem;
   margin-top: 1.25rem;
   position: relative;
+  height: calc(100vh - 8.4375rem);
 
   .conversation {
     box-sizing: border-box;
     //make shadow on bottom to simulate border bottom
     border-bottom: 0.0625rem solid #e6e6e6;
     width: 100%;
+    min-height: 6.25rem;
 
     img {
       width: 2.875rem;
       height: 2.875rem;
       border-radius: 50%;
     }
-    min-height: 4.375rem;
     &:hover {
       cursor: pointer;
     }

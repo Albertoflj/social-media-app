@@ -10,21 +10,21 @@
 
 @include breakpoint-up(large) {
   .conversations-with-title {
-    border-right: 1px solid #e6e6e6;
-    max-width: 500px;
+    border-right: 0.0625rem solid #e6e6e6;
+    max-width: 31.25rem;
   }
   .conversation-messages {
     position: relative;
     overflow-y: scroll;
     box-sizing: border-box;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 12.5rem);
   }
   .desktop-messages {
-    margin-top: 20px;
+    margin-top: 1.25rem;
     width: 100%;
   }
   .conversations-container {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 6.25rem);
   }
 }
 .desktop-large {
