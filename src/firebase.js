@@ -29,6 +29,7 @@ import {
 import { ref, deleteObject } from "firebase/storage";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { setConversation } from "./redux/conversationsSlice";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -559,6 +560,7 @@ export const getFollowingChats = async (userId, secondUserId) => {
       },
 
       lastMessage: "",
+      lastMessageSent: new Date,
     });
     addUserConversation(firstId, chatId);
     addUserConversation(secondId, chatId);
@@ -580,6 +582,7 @@ export const createChat = async (firstId, secondId, chatId) => {
       userId: secondId,
     },
     lastMessage: "",
+    lastMessageSent: new Date(),
     timeCreated: serverTimestamp(),
   });
   addUserConversation(firstId, chatId);
@@ -613,6 +616,7 @@ export const getUserConversations = async (userId) => {
         const chat = chatDoc.data();
         chat.id = conversations[i];
         conversationUsers.push(chat);
+        store.dispatch(setConversation(JSON.parse(JSON.stringify(conversationUsers))));
       }
     }
     return conversationUsers;
@@ -677,6 +681,7 @@ export const addChatMessage = async (chatId, senderDetails) => {
   const chatRef = doc(db, "chats", chatId);
   const result2 = await updateDoc(chatRef, {
     lastMessage: senderDetails.message,
+    lastMessageSent: new Date(),
   });
 
   return result, result2;
