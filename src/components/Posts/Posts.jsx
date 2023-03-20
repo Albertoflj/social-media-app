@@ -10,12 +10,14 @@ import { useEffect, useState } from "react";
 import "./post.scss";
 //buttons
 
-import { Link } from "react-router-dom";
 import Post from "./Post";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Posts = () => {
+  const dispatch = useDispatch();
   const [posts, setPosts] = useState([]);
+  const posts244 = useSelector((state) => state.post.posts);
   const [loading, setLoading] = useState(true);
   const [user] = useAuthState(auth);
   const [userExists, setUserExists] = useState(false);
@@ -23,35 +25,18 @@ const Posts = () => {
     (state) => state.user.finishedFetching
   );
 
-  // useEffect(() => {
-  //   setPosts(dummyData);
-  //   setLoading(false);
-  //   console.log(dummyData);
-  // }, []);
-
   useEffect(() => {
     if (user) {
       setUserExists(true);
       getFollowingPosts(user.uid, (followingPosts) => {
         if (followingPosts) {
           setPosts((prevPosts) => {
-            const newPosts = followingPosts.filter(
-              (followingPost) =>
-                !prevPosts.some((prevPost) => prevPost.id === followingPost.id)
-            );
-            return [...prevPosts, ...newPosts];
+            return [...prevPosts, ...followingPosts];
           });
         }
       });
     } else if (!user && isFinishedFetching) {
-      getAllPostsFromSpecificUser(
-        "QahgWcwga4edVwhtJUBsqmDTMlQ2",
-        (guestPosts) => {
-          if (guestPosts) {
-            setPosts(guestPosts);
-          }
-        }
-      );
+      getAllPostsFromSpecificUser("QahgWcwga4edVwhtJUBsqmDTMlQ2");
     }
     setLoading(false);
   }, [user]);
@@ -62,10 +47,10 @@ const Posts = () => {
         <h1>Loading...</h1>
       ) : (
         <div className="posts flex  fd-c ai-c">
-          {posts.map((post) => (
+          {posts244.map((post, index) => (
             <Post
               post={post}
-              key={post.id}
+              key={post.id + index}
               isCreatorOfPost={user && user.uid === post.creator.uid}
             />
           ))}

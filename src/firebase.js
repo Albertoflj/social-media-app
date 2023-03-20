@@ -30,6 +30,7 @@ import { ref, deleteObject } from "firebase/storage";
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { setConversation } from "./redux/conversationsSlice";
+import { setPost } from "./redux/postsSlice";
 
 const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
@@ -224,11 +225,7 @@ export const getFollowingPosts = async (userId, callback) => {
             followingUserPosts.forEach((postId) => {
               getPost(postId, usersData, (post) => {
                 posts.push(post);
-                if (
-                  postId === followingUserPosts[followingUserPosts.length - 1]
-                ) {
-                  callback(posts);
-                }
+                store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
               });
             });
           });
@@ -237,6 +234,7 @@ export const getFollowingPosts = async (userId, callback) => {
     });
   });
 };
+
 export const getAllPostsFromSpecificUser = async (userId, callback) => {
   const postsCollectionRef = collection(db, "posts");
   const userDocRef = doc(db, "users", userId);
@@ -249,9 +247,7 @@ export const getAllPostsFromSpecificUser = async (userId, callback) => {
       userPosts.forEach((postId) => {
         getPost(postId, userData, (post) => {
           posts.push(post);
-          if (postId === userPosts[userPosts.length - 1]) {
-            callback(posts);
-          }
+          store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
         });
       });
     } else {
@@ -476,14 +472,14 @@ export const followUser = async (userId) => {
   });
 
   const chatId = userId < user.uid ? userId + user.uid : user.uid + userId;
-  
+
   //check if chat already exists, if not, create new chat
   const chatRef = doc(db, "chats", chatId);
-  const chatResult = await getDoc(chatRef).then(chat =>{
-    if(!chat.exists()){
+  const chatResult = await getDoc(chatRef).then((chat) => {
+    if (!chat.exists()) {
       createChat(userId, user.uid, chatId);
     }
-  })
+  });
 
   return result, result2, chatResult;
 };
@@ -567,7 +563,7 @@ export const getFollowingChats = async (userId, secondUserId) => {
       },
 
       lastMessage: "",
-      lastMessageSent: new Date,
+      lastMessageSent: new Date(),
     });
     addUserConversation(firstId, chatId);
     addUserConversation(secondId, chatId);
@@ -623,7 +619,9 @@ export const getUserConversations = async (userId) => {
         const chat = chatDoc.data();
         chat.id = conversations[i];
         conversationUsers.push(chat);
-        store.dispatch(setConversation(JSON.parse(JSON.stringify(conversationUsers))));
+        store.dispatch(
+          setConversation(JSON.parse(JSON.stringify(conversationUsers)))
+        );
       }
     }
     return conversationUsers;

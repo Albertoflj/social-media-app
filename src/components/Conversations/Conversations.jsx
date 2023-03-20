@@ -9,7 +9,9 @@ const Conversations = (props) => {
   const currentUser = useSelector((state) => state.user.user);
   const [conversationId, setConversationId] = useState("");
   const [activeConversationId, setActiveConversationId] = useState(null);
-  const conversations = useSelector(state => state.conversation.conversations)
+  const conversations = useSelector(
+    (state) => state.conversation.conversations
+  );
   const handleConversationClick = (conversation) => {
     setShowConversation(true);
     setConversationId(conversation.id);
@@ -32,9 +34,9 @@ const Conversations = (props) => {
   const [showConversation, setShowConversation] = useState(false);
 
   useEffect(() => {
-    getUserConversations(currentUser)
+    getUserConversations(currentUser);
   }, [currentUser]);
-  
+
   return (
     <>
       <div className="conversations scrollbar-hidden flex fd-c">
