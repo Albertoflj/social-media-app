@@ -679,7 +679,7 @@ export const addChatMessage = async (chatId, senderDetails) => {
     lastMessage: senderDetails.message,
   });
 
-  return result;
+  return result, result2;
 };
 
 export default app;
