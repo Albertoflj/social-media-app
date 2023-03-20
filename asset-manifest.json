@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/social-media-app/static/css/main.35cbf231.css",
-    "main.js": "/social-media-app/static/js/main.55408cce.js",
+    "main.js": "/social-media-app/static/js/main.70a7c1dc.js",
     "static/js/787.399b96df.chunk.js": "/social-media-app/static/js/787.399b96df.chunk.js",
     "static/media/logo.svg": "/social-media-app/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/social-media-app/index.html",
@@ -9,21 +9,21 @@
     "static/media/chat.svg": "/social-media-app/static/media/chat.507432b4f052a5ad0ac900ec17483d68.svg",
     "static/media/heart.svg": "/social-media-app/static/media/heart.27cf625b15dd614828adb40336c2e861.svg",
     "static/media/card-image.svg": "/social-media-app/static/media/card-image.6134d6410fd6f235a41275762b09cf14.svg",
-    "static/media/house-door.svg": "/social-media-app/static/media/house-door.815744de873cc8756106a14d7009c1f8.svg",
-    "static/media/chat-dots-fill.svg": "/social-media-app/static/media/chat-dots-fill.507bdf22414d8be6214a8e8f8c2f9e71.svg",
+    "static/media/house-door.svg": "/social-media-app/static/media/house-door.1503d524ceced87858816d2ac5a66d12.svg",
+    "static/media/chat-dots-fill.svg": "/social-media-app/static/media/chat-dots-fill.2112cc865445f35fefe9e959541e196b.svg",
     "static/media/house-door-fill.svg": "/social-media-app/static/media/house-door-fill.833cc237da3686e033e6e572b5f3c58f.svg",
     "static/media/plus-square.svg": "/social-media-app/static/media/plus-square.ae289d0cb310b8da975aacebf8835005.svg",
-    "static/media/person.svg": "/social-media-app/static/media/person.0aa90875601f15ebc535b6d3a5d58f74.svg",
+    "static/media/person.svg": "/social-media-app/static/media/person.b87141ee2ebc69697c380acaecf5f5e5.svg",
     "static/media/send.svg": "/social-media-app/static/media/send.7d8ecc6d7bc564740c8ece2eec3b3d1a.svg",
     "static/media/x.svg": "/social-media-app/static/media/x.85f9f2a1f603d5a966a44474678a7981.svg",
     "static/media/arrow-left.svg": "/social-media-app/static/media/arrow-left.83aa775a65892efff8dd306eccced5ba.svg",
     "static/media/heart-fill.svg": "/social-media-app/static/media/heart-fill.092af352658661a61b5b05b87a913567.svg",
     "main.35cbf231.css.map": "/social-media-app/static/css/main.35cbf231.css.map",
-    "main.55408cce.js.map": "/social-media-app/static/js/main.55408cce.js.map",
+    "main.70a7c1dc.js.map": "/social-media-app/static/js/main.70a7c1dc.js.map",
     "787.399b96df.chunk.js.map": "/social-media-app/static/js/787.399b96df.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.35cbf231.css",
-    "static/js/main.55408cce.js"
+    "static/js/main.70a7c1dc.js"
   ]
 }
