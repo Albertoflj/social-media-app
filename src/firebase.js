@@ -476,9 +476,16 @@ export const followUser = async (userId) => {
   });
 
   const chatId = userId < user.uid ? userId + user.uid : user.uid + userId;
-  createChat(userId, user.uid, chatId);
+  
+  //check if chat already exists, if not, create new chat
+  const chatRef = doc(db, "chats", chatId);
+  const chatResult = await getDoc(chatRef).then(chat =>{
+    if(!chat.exists()){
+      createChat(userId, user.uid, chatId);
+    }
+  })
 
-  return result, result2;
+  return result, result2, chatResult;
 };
 
 export const deletePost = async (postId) => {
