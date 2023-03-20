@@ -7,10 +7,9 @@ import { useSelector } from "react-redux";
 
 const Conversations = (props) => {
   const currentUser = useSelector((state) => state.user.user);
-  const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
   const [activeConversationId, setActiveConversationId] = useState(null);
-
+  const conversations = useSelector(state => state.conversation.conversations)
   const handleConversationClick = (conversation) => {
     setShowConversation(true);
     setConversationId(conversation.id);
@@ -33,20 +32,9 @@ const Conversations = (props) => {
   const [showConversation, setShowConversation] = useState(false);
 
   useEffect(() => {
-    getUserConversations(currentUser).then((conversations) => {
-      conversations.map((conversation) => {
-        setConversations((conversations) => [...conversations, conversation]);
-        setConversations(
-          (prevConversation) =>
-            prevConversation &&
-            prevConversation.filter(
-              (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-            )
-        );
-      });
-    });
+    getUserConversations(currentUser)
   }, [currentUser]);
-
+  
   return (
     <>
       <div className="conversations scrollbar-hidden flex fd-c">
