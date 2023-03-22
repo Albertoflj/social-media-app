@@ -170,9 +170,9 @@ export const checkIfUsernameExists = async (username) => {
   return usernameExists;
 };
 
-export const checkIfUserHasUsername = (uid) => {
+export const checkIfUserHasUsername = async (uid) => {
   const userRef = doc(db, "users", uid);
-  getDoc(userRef).then((res) => {
+  const hasUsername = await getDoc(userRef).then((res) => {
     if (res.data().username != null) {
       return true;
     } else {
@@ -181,58 +181,73 @@ export const checkIfUserHasUsername = (uid) => {
   });
 };
 export const writeUsername = async (username) => {
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  await updateDoc(userRef, {
-    username: username,
-  });
+  try {
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userRef, {
+      username: username,
+    });
+  } catch (error) {
+    console.error("Error updating username:", error);
+  }
 };
 
 export const getUserData = async (uid) => {
-  const userRef = doc(db, "users", uid);
-  const docSnap = await getDoc(userRef);
-  if (docSnap.exists()) {
-    return docSnap.data();
+  try {
+    const userRef = doc(db, "users", uid);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      throw new Error("Document does not exist.");
+    }
+  } catch (error) {
+    console.error("Error getting user data:", error);
   }
 };
 
 //--------------------FOR POSTS--------------------
 
 export const getFollowingPosts = async (userId, callback) => {
-  signInWithGoogle(() => {
-    const postsCollectionRef = collection(db, "posts");
-    const userDocRef = doc(db, "users", userId);
-    const usersCollectionRef = collection(db, "users");
+  try {
+    signInWithGoogle(() => {
+      const postsCollectionRef = collection(db, "posts");
+      const userDocRef = doc(db, "users", userId);
+      const usersCollectionRef = collection(db, "users");
 
-    let posts = [];
-    let post = {};
-    let usersData = {};
+      let posts = [];
+      let post = {};
+      let usersData = {};
 
-    getDoc(userDocRef).then(async (userDoc) => {
-      const followingUsers = userDoc.data().following;
-      const userDataPromises = followingUsers.map((followingUser) => {
-        return getUserData(followingUser);
-      });
-      const userDataList = await Promise.all(userDataPromises);
-      usersData = Object.assign({}, ...userDataList);
-      followingUsers.forEach((followingUser) => {
-        const followingUserQuery = query(
-          usersCollectionRef,
-          where("uid", "==", followingUser)
-        );
-        getDocs(followingUserQuery).then((followingUserDocs) => {
-          followingUserDocs.forEach((followingUserDoc) => {
-            let followingUserPosts = followingUserDoc.data().userPosts;
-            followingUserPosts.forEach((postId) => {
-              getPost(postId, usersData, (post) => {
-                posts.push(post);
-                store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
+      //get posts id, put in redux, fetch 3 by 3 posts from ids by user scrolling
+      getDoc(userDocRef).then(async (userDoc) => {
+        const followingUsers = userDoc.data().following;
+        const userDataPromises = followingUsers.map((followingUser) => {
+          return getUserData(followingUser);
+        });
+        const userDataList = await Promise.all(userDataPromises);
+        usersData = Object.assign({}, ...userDataList);
+        followingUsers.forEach((followingUser) => {
+          const followingUserQuery = query(
+            usersCollectionRef,
+            where("uid", "==", followingUser)
+          );
+          getDocs(followingUserQuery).then((followingUserDocs) => {
+            followingUserDocs.forEach((followingUserDoc) => {
+              let followingUserPosts = followingUserDoc.data().userPosts;
+              followingUserPosts.forEach((postId) => {
+                getPost(postId, usersData, (post) => {
+                  posts.push(post);
+                  store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
+                });
               });
             });
           });
         });
       });
     });
-  });
+  } catch (error) {
+    console.error("Error getting following posts:", error);
+  }
 };
 
 export const getAllPostsFromSpecificUser = async (userId, callback) => {
@@ -329,63 +344,80 @@ export const sendComment = async (
   userName,
   userPhoto
 ) => {
-  // const postRef = doc(db, "posts", postId);
+  try {
+    // const postRef = doc(db, "posts", postId);
 
-  // // Wait for the post to be retrieved before adding the comment
-  // await getPost(postId, false);
+    // // Wait for the post to be retrieved before adding the comment
+    // await getPost(postId, false);
 
-  const commentsRef = collection(db, "posts", postId, "comments");
+    const commentsRef = collection(db, "posts", postId, "comments");
 
-  // Wait for the comment to be added before returning the result
-  const result = await addDoc(commentsRef, {
-    author: user,
-    author_name: userName,
-    author_photo: userPhoto,
-    text: comment,
-    createdAt: serverTimestamp(),
-  });
-  const postRef = doc(db, "posts", postId);
-  updateDoc(postRef, {
-    commentsLength: increment(1),
-  });
+    // Wait for the comment to be added before returning the result
+    const result = await addDoc(commentsRef, {
+      author: user,
+      author_name: userName,
+      author_photo: userPhoto,
+      text: comment,
+      createdAt: serverTimestamp(),
+    });
+    const postRef = doc(db, "posts", postId);
+    updateDoc(postRef, {
+      commentsLength: increment(1),
+    });
 
-  return result;
+    return result;
+  } catch (error) {
+    console.error("Could not send comment:", error);
+  }
 };
 
 export const getComments = (postId) => {
-  const postCommentsCollectionRef = collection(db, "posts", postId, "comments");
-  const commentsQuery = query(
-    postCommentsCollectionRef,
-    orderBy("createdAt", "desc"),
-    limit(25)
-  );
-  getDocs(commentsQuery).then((postDoc) => {
-    postDoc.forEach((post) => {
-      // console.log(post.data());
+  try {
+    const postCommentsCollectionRef = collection(
+      db,
+      "posts",
+      postId,
+      "comments"
+    );
+    const commentsQuery = query(
+      postCommentsCollectionRef,
+      orderBy("createdAt", "desc"),
+      limit(25)
+    );
+    getDocs(commentsQuery).then((postDoc) => {
+      postDoc.forEach((post) => {
+        // console.log(post.data());
+      });
     });
-  });
+  } catch (error) {
+    console.log("Could not get comments: ", error);
+  }
 };
 
 export const sendLike = async (userId, postId) => {
-  const likesRef = doc(db, "posts", postId);
+  try {
+    const likesRef = doc(db, "posts", postId);
 
-  // Wait for the comment to be added before returning the result
+    // Wait for the comment to be added before returning the result
 
-  const result = await getDoc(likesRef).then((res) => {
-    let likes = res.data().likedBy;
-    if (likes.includes(userId)) {
-      const index = likes.indexOf(userId);
-      likes.splice(index, 1);
-      updateDoc(likesRef, {
-        likedBy: likes,
-      });
-    } else {
-      likes.push(userId);
-      updateDoc(likesRef, {
-        likedBy: likes,
-      });
-    }
-  });
+    const result = await getDoc(likesRef).then((res) => {
+      let likes = res.data().likedBy;
+      if (likes.includes(userId)) {
+        const index = likes.indexOf(userId);
+        likes.splice(index, 1);
+        updateDoc(likesRef, {
+          likedBy: likes,
+        });
+      } else {
+        likes.push(userId);
+        updateDoc(likesRef, {
+          likedBy: likes,
+        });
+      }
+    });
+  } catch (error) {
+    console.log("Could not send like: ", error);
+  }
 };
 
 // const commentsQuery = query(
@@ -395,159 +427,215 @@ export const sendLike = async (userId, postId) => {
 // );
 
 export const createPost = async (post) => {
-  const postCollectionRef = collection(db, "posts");
-  const result = await addDoc(postCollectionRef, {
-    caption: post.caption,
-    user: post.user,
-    photo: post.image,
-    photoLocation: post.imageLocation,
-    likedBy: [],
-    createdAt: serverTimestamp(),
-    commentsLength: 0,
-  });
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  getUserData(auth.currentUser.uid).then((user) => {
-    const userPosts = user.userPosts;
-    userPosts.push(result.id);
-    updateDoc(userRef, {
-      userPosts: userPosts,
+  try {
+    const postCollectionRef = collection(db, "posts");
+    const result = await addDoc(postCollectionRef, {
+      caption: post.caption,
+      user: post.user,
+      photo: post.image,
+      photoLocation: post.imageLocation,
+      likedBy: [],
+      createdAt: serverTimestamp(),
+      commentsLength: 0,
     });
-  });
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    getUserData(auth.currentUser.uid).then((user) => {
+      const userPosts = user.userPosts;
+      userPosts.push(result.id);
+      updateDoc(userRef, {
+        userPosts: userPosts,
+      });
+    });
 
-  return result;
+    return result;
+  } catch (error) {
+    console.log("Could not create post: ", error);
+  }
 };
 
 export const editProfile = async (name, bio) => {
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const result = await updateDoc(userRef, {
-    displayName: name,
-    bio: bio,
-  });
-  return result;
+  try {
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const result = await updateDoc(userRef, {
+      displayName: name,
+      bio: bio,
+    });
+    return result;
+  } catch (error) {
+    console.log("Could not edit profile: ", error);
+  }
 };
 
 export const unfollowUser = async (userId) => {
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const result = await getDoc(userRef).then((res) => {
-    let following = res.data().following;
-    const index = following.indexOf(userId);
-    following.splice(index, 1);
-    updateDoc(userRef, {
-      following: following,
+  try {
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const result = await getDoc(userRef).then((res) => {
+      let following = res.data().following;
+      const index = following.indexOf(userId);
+      following.splice(index, 1);
+      updateDoc(userRef, {
+        following: following,
+      });
     });
-  });
-  // remove user from followers list
-  const userRef2 = doc(db, "users", userId);
-  const result2 = await getDoc(userRef2).then((res) => {
-    let followers = res.data().followers;
-    const index = followers.indexOf(auth.currentUser.uid);
-    followers.splice(index, 1);
-    updateDoc(userRef2, {
-      followers: followers,
+    // remove user from followers list
+    const userRef2 = doc(db, "users", userId);
+    const result2 = await getDoc(userRef2).then((res) => {
+      let followers = res.data().followers;
+      const index = followers.indexOf(auth.currentUser.uid);
+      followers.splice(index, 1);
+      updateDoc(userRef2, {
+        followers: followers,
+      });
     });
-  });
 
-  return result, result2;
+    return [result, result2];
+  } catch (error) {
+    console.log("Could not unfollow user: ", error);
+  }
 };
 
 export const followUser = async (userId) => {
-  const user = auth.currentUser;
+  try {
+    const user = auth.currentUser;
 
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const result = await getDoc(userRef).then((res) => {
-    let following = res.data().following;
-    following.push(userId);
-    updateDoc(userRef, {
-      following: following,
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const result = await getDoc(userRef).then((res) => {
+      let following = res.data().following;
+      following.push(userId);
+      updateDoc(userRef, {
+        following: following,
+      });
     });
-  });
-  // add user to followers list
-  const userRef2 = doc(db, "users", userId);
-  const result2 = await getDoc(userRef2).then((res) => {
-    let followers = res.data().followers;
-    followers.push(auth.currentUser.uid);
-    updateDoc(userRef2, {
-      followers: followers,
+    // add user to followers list
+    const userRef2 = doc(db, "users", userId);
+    const result2 = await getDoc(userRef2).then((res) => {
+      let followers = res.data().followers;
+      followers.push(auth.currentUser.uid);
+      updateDoc(userRef2, {
+        followers: followers,
+      });
     });
-  });
 
-  const chatId = userId < user.uid ? userId + user.uid : user.uid + userId;
+    const chatId = userId < user.uid ? userId + user.uid : user.uid + userId;
 
-  //check if chat already exists, if not, create new chat
-  const chatRef = doc(db, "chats", chatId);
-  const chatResult = await getDoc(chatRef).then((chat) => {
-    if (!chat.exists()) {
-      createChat(userId, user.uid, chatId);
-    }
-  });
+    //check if chat already exists, if not, create new chat
+    const chatRef = doc(db, "chats", chatId);
+    const chatResult = await getDoc(chatRef).then((chat) => {
+      if (!chat.exists()) {
+        createChat(userId, user.uid, chatId);
+      }
+    });
 
-  return result, result2, chatResult;
+    return [result, result2, chatResult];
+  } catch (error) {
+    console.log("Could not follow user: ", error);
+  }
 };
 
 export const deletePost = async (postId) => {
-  const postRef = doc(db, "posts", postId);
-  //delete image from storage
-  const result3 = await getDoc(postRef).then((res) => {
-    const photo = res.data().photoLocation;
-    const storageRef = ref(storage, photo);
-    deleteObject(storageRef);
-  });
-
-  const result = await deleteDoc(postRef);
-  // remove post from user's posts list
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const result2 = await getDoc(userRef).then((res) => {
-    let userPosts = res.data().userPosts;
-    const index = userPosts.indexOf(postId);
-    userPosts.splice(index, 1);
-    updateDoc(userRef, {
-      userPosts: userPosts,
+  try {
+    const postRef = doc(db, "posts", postId);
+    //delete image from storage
+    const result3 = await getDoc(postRef).then((res) => {
+      const photo = res.data().photoLocation;
+      const storageRef = ref(storage, photo);
+      deleteObject(storageRef);
     });
-  });
 
-  return result;
+    const result = await deleteDoc(postRef);
+    // remove post from user's posts list
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const result2 = await getDoc(userRef).then((res) => {
+      let userPosts = res.data().userPosts;
+      const index = userPosts.indexOf(postId);
+      userPosts.splice(index, 1);
+      updateDoc(userRef, {
+        userPosts: userPosts,
+      });
+    });
+
+    return [result, result2, result3];
+  } catch (error) {
+    console.log("Could not delete post: ", error);
+  }
 };
 
 export const deleteComment = async (postId, commentId) => {
-  const commentRef = doc(db, "posts", postId, "comments", commentId);
-  const result = await deleteDoc(commentRef);
-  return result;
+  try {
+    const commentRef = doc(db, "posts", postId, "comments", commentId);
+    const result = await deleteDoc(commentRef);
+    return result;
+  } catch (error) {
+    console.log("Could not delete comment: ", error);
+  }
 };
 
 export const searchUsers = async (searchTerm) => {
-  const usersRef = collection(db, "users");
-  const usersQuery = query(
-    usersRef,
-    orderBy("username"),
-    startAt(searchTerm),
-    endAt(searchTerm + "\uf8ff"),
-    limit(5)
-  );
-  const querySnapshot = await getDocs(usersQuery);
-  const users = [];
-  querySnapshot.forEach((doc) => {
-    if (doc.data().username.startsWith(searchTerm)) {
-      users.push({ id: doc.id, ...doc.data() });
-    }
-  });
-  return users;
+  try {
+    const usersRef = collection(db, "users");
+    const usersQuery = query(
+      usersRef,
+      orderBy("username"),
+      startAt(searchTerm),
+      endAt(searchTerm + "\uf8ff"),
+      limit(5)
+    );
+    const querySnapshot = await getDocs(usersQuery);
+    const users = [];
+    querySnapshot.forEach((doc) => {
+      if (doc.data().username.startsWith(searchTerm)) {
+        users.push({ id: doc.id, ...doc.data() });
+      }
+    });
+    return users;
+  } catch (error) {
+    console.log("Could not search users: ", error);
+  }
 };
 
 export const getFollowingChats = async (userId, secondUserId) => {
-  const firstId = userId;
-  const secondId = secondUserId;
-  const chatId = firstId < secondId ? firstId + secondId : secondId + firstId;
+  try {
+    const firstId = userId;
+    const secondId = secondUserId;
+    const chatId = firstId < secondId ? firstId + secondId : secondId + firstId;
 
-  // check if chat exists
-  const chatRef = doc(db, "chats", chatId);
-  const chatDoc = await getDoc(chatRef);
-  if (chatDoc.exists()) {
-    // console.log(chatDoc.data());
-    const chat = chatDoc.data();
-    chat.id = chatId;
-    return chat;
-  } else {
-    console.log("Chat does not exist");
+    // check if chat exists
+    const chatRef = doc(db, "chats", chatId);
+    const chatDoc = await getDoc(chatRef);
+    if (chatDoc.exists()) {
+      // console.log(chatDoc.data());
+      const chat = chatDoc.data();
+      chat.id = chatId;
+      return chat;
+    } else {
+      console.log("Chat does not exist");
+      const secondUser = await getUserData(secondId);
+      const firstUser = await getUserData(firstId);
+      await setDoc(doc(db, "chats", chatId), {
+        user1: {
+          photoURL: firstUser.photoURL,
+          username: firstUser.username,
+          userId: firstId,
+        },
+        user2: {
+          photoURL: secondUser.photoURL,
+          username: secondUser.username,
+          userId: secondId,
+        },
+
+        lastMessage: "",
+        lastMessageSent: new Date(),
+      });
+      addUserConversation(firstId, chatId);
+      addUserConversation(secondId, chatId);
+      return chatId;
+    }
+  } catch (error) {
+    console.log("Could not get following chats: ", error);
+  }
+};
+export const createChat = async (firstId, secondId, chatId) => {
+  try {
     const secondUser = await getUserData(secondId);
     const firstUser = await getUserData(firstId);
     await setDoc(doc(db, "chats", chatId), {
@@ -561,135 +649,135 @@ export const getFollowingChats = async (userId, secondUserId) => {
         username: secondUser.username,
         userId: secondId,
       },
-
       lastMessage: "",
       lastMessageSent: new Date(),
+      timeCreated: serverTimestamp(),
     });
     addUserConversation(firstId, chatId);
     addUserConversation(secondId, chatId);
     return chatId;
+  } catch (error) {
+    console.log("Could not create chat: ", error);
   }
-};
-export const createChat = async (firstId, secondId, chatId) => {
-  const secondUser = await getUserData(secondId);
-  const firstUser = await getUserData(firstId);
-  await setDoc(doc(db, "chats", chatId), {
-    user1: {
-      photoURL: firstUser.photoURL,
-      username: firstUser.username,
-      userId: firstId,
-    },
-    user2: {
-      photoURL: secondUser.photoURL,
-      username: secondUser.username,
-      userId: secondId,
-    },
-    lastMessage: "",
-    lastMessageSent: new Date(),
-    timeCreated: serverTimestamp(),
-  });
-  addUserConversation(firstId, chatId);
-  addUserConversation(secondId, chatId);
-  return chatId;
 };
 
 export const addUserConversation = async (userId, chatId) => {
-  const userRef = doc(db, "users", userId);
-  const userDoc = await getDoc(userRef);
-  if (userDoc.exists()) {
-    const conversations = userDoc.data().conversations;
-    conversations.push(chatId);
-    await updateDoc(userRef, {
-      conversations: conversations,
-    });
-  } else {
-    console.log("User does not exist");
+  try {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const conversations = userDoc.data().conversations;
+      conversations.push(chatId);
+      await updateDoc(userRef, {
+        conversations: conversations,
+      });
+    } else {
+      console.log("User does not exist");
+    }
+  } catch (error) {
+    console.log("Could not add user conversation: ", error);
   }
 };
 export const getUserConversations = async (userId) => {
-  const userRef = doc(db, "users", userId);
-  const userDoc = await getDoc(userRef);
-  if (userDoc.exists()) {
-    const conversations = userDoc.data().conversations;
-    const conversationUsers = [];
-    for (let i = 0; i < conversations.length; i++) {
-      const chatRef = doc(db, "chats", conversations[i]);
-      const chatDoc = await getDoc(chatRef);
-      if (chatDoc.exists()) {
-        const chat = chatDoc.data();
-        chat.id = conversations[i];
-        conversationUsers.push(chat);
-        store.dispatch(
-          setConversation(JSON.parse(JSON.stringify(conversationUsers)))
-        );
+  try {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const conversations = userDoc.data().conversations;
+      const conversationUsers = [];
+      for (let i = 0; i < conversations.length; i++) {
+        const chatRef = doc(db, "chats", conversations[i]);
+        const chatDoc = await getDoc(chatRef);
+        if (chatDoc.exists()) {
+          const chat = chatDoc.data();
+          chat.id = conversations[i];
+          conversationUsers.push(chat);
+          store.dispatch(
+            setConversation(JSON.parse(JSON.stringify(conversationUsers)))
+          );
+        }
       }
+      return conversationUsers;
+    } else {
+      console.log("User does not exist");
+      return [];
     }
-    return conversationUsers;
-  } else {
-    console.log("User does not exist");
-    return [];
+  } catch (error) {
+    console.log("Could not get user conversations: ", error);
   }
 };
 
 export const getFollowingUsers = async (userId) => {
-  const userRef = doc(db, "users", userId);
-  const userDoc = await getDoc(userRef);
-  if (userDoc.exists()) {
-    const following = userDoc.data().following;
-    const followingUsers = [];
-    for (let i = 0; i < following.length; i++) {
-      const userRef = doc(db, "users", following[i]);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
-        followingUsers.push(userDoc.data());
+  try {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const following = userDoc.data().following;
+      const followingUsers = [];
+      for (let i = 0; i < following.length; i++) {
+        const userRef = doc(db, "users", following[i]);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          followingUsers.push(userDoc.data());
+        }
       }
+      return followingUsers;
+    } else {
+      console.log("User does not exist");
+      return [];
     }
-    return followingUsers;
-  } else {
-    console.log("User does not exist");
-    return [];
+  } catch (error) {
+    console.log("Could not get following users: ", error);
   }
 };
 
 export const getConversationMessages = async (chatId) => {
-  const messagesRef = collection(
-    db,
-    "conversationMessages",
-    chatId,
-    "messages"
-  );
-  const messagesQuery = query(messagesRef, orderBy("timeSent"));
-  const querySnapshot = await getDocs(messagesQuery);
-  const messages = [];
-  querySnapshot.forEach((doc) => {
-    messages.push({ id: doc.id, ...doc.data() });
-  });
-  return messages;
+  try {
+    const messagesRef = collection(
+      db,
+      "conversationMessages",
+      chatId,
+      "messages"
+    );
+    const messagesQuery = query(messagesRef, orderBy("timeSent"));
+    const querySnapshot = await getDocs(messagesQuery);
+    const messages = [];
+    querySnapshot.forEach((doc) => {
+      messages.push({ id: doc.id, ...doc.data() });
+    });
+    return messages;
+  } catch (error) {
+    console.log("Could not get conversation messages: ", error);
+  }
 };
 
 export const addChatMessage = async (chatId, senderDetails) => {
-  const messagesRef = collection(
-    db,
-    "conversationMessages",
-    chatId,
-    "messages"
-  );
-  const result = await addDoc(messagesRef, {
-    // message: "yessirrr",
-    message: senderDetails.message,
-    timeSent: new Date(),
-    sender: senderDetails.userId,
-    name: senderDetails.username,
-    photoURL: senderDetails.photoURL,
-  });
-  //add last message to chat
-  const chatRef = doc(db, "chats", chatId);
-  const result2 = await updateDoc(chatRef, {
-    lastMessage: senderDetails.message,
-    lastMessageSent: new Date(),
-  });
+  try {
+    const messagesRef = collection(
+      db,
+      "conversationMessages",
+      chatId,
+      "messages"
+    );
+    const result = await addDoc(messagesRef, {
+      // message: "yessirrr",
+      message: senderDetails.message,
+      timeSent: new Date(),
+      sender: senderDetails.userId,
+      name: senderDetails.username,
+      photoURL: senderDetails.photoURL,
+    });
+    //add last message to chat
+    const chatRef = doc(db, "chats", chatId);
+    const result2 = await updateDoc(chatRef, {
+      lastMessage: senderDetails.message,
+      lastMessageSent: new Date(),
+    });
 
-  return result, result2;
+    return [result, result2];
+  } catch (error) {
+    console.log("Could not add chat message: ", error);
+  }
 };
 
 export default app;
