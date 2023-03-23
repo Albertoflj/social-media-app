@@ -10,7 +10,6 @@ const TitleTab = (props) => {
   useEffect(() => {
     if (props.title === "Comments") {
       setSticky("sticky");
-      console.log("sticky");
     }
   }, []);
 

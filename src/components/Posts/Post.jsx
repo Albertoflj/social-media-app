@@ -246,14 +246,16 @@ const Post = (props) => {
                     </p>
                   )}
                 </Link>
-                <button
-                  className="mobile view-comments"
-                  onClick={() => {
-                    handleShowComments("mobile");
-                  }}
-                >
-                  {comments(post, false)}
-                </button>
+                {comments(post, true) < 2 ? null : (
+                  <button
+                    className="mobile view-comments"
+                    onClick={() => {
+                      handleShowComments("mobile");
+                    }}
+                  >
+                    {comments(post, false)}
+                  </button>
+                )}
                 {comments(post, true) < 2 ? null : (
                   <div className="comment flex fd-r ai-c">
                     <Link to={`/user/${post.comments[0].author}`}>
