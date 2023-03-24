@@ -11,7 +11,7 @@ const Conversation = (props) => {
   useEffect(() => {
     return () => {
       document.body.classList.remove("no-scroll");
-      document.body.style.overflowY = "scroll";
+      document.body.style.overflowY = "auto";
     };
   }, []);
 

@@ -2,7 +2,6 @@ import firebase from "firebase/compat/app";
 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
-  FieldValue,
   getCountFromServer,
   getDocs,
   getFirestore,
@@ -28,11 +27,10 @@ import {
 } from "./redux/userSlice";
 import { ref, deleteObject } from "firebase/storage";
 
-import { useCollectionData } from "react-firebase-hooks/firestore";
 import { setConversation } from "./redux/conversationsSlice";
 import { setPost } from "./redux/postsSlice";
 
-const provider = new GoogleAuthProvider();
+// const provider = new GoogleAuthProvider();
 const app = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -179,6 +177,7 @@ export const checkIfUserHasUsername = async (uid) => {
       return false;
     }
   });
+  return hasUsername;
 };
 export const writeUsername = async (username) => {
   try {
@@ -209,36 +208,25 @@ export const getUserData = async (uid) => {
 
 export const getFollowingPosts = async (userId, callback) => {
   try {
-    signInWithGoogle(() => {
-      const postsCollectionRef = collection(db, "posts");
-      const userDocRef = doc(db, "users", userId);
-      const usersCollectionRef = collection(db, "users");
+    const userDocRef = doc(db, "users", userId);
+    const usersCollectionRef = collection(db, "users");
 
-      let posts = [];
-      let post = {};
-      let usersData = {};
+    let posts = [];
 
-      //get posts id, put in redux, fetch 3 by 3 posts from ids by user scrolling
-      getDoc(userDocRef).then(async (userDoc) => {
-        const followingUsers = userDoc.data().following;
-        const userDataPromises = followingUsers.map((followingUser) => {
-          return getUserData(followingUser);
-        });
-        const userDataList = await Promise.all(userDataPromises);
-        usersData = Object.assign({}, ...userDataList);
-        followingUsers.forEach((followingUser) => {
-          const followingUserQuery = query(
-            usersCollectionRef,
-            where("uid", "==", followingUser)
-          );
-          getDocs(followingUserQuery).then((followingUserDocs) => {
-            followingUserDocs.forEach((followingUserDoc) => {
-              let followingUserPosts = followingUserDoc.data().userPosts;
-              followingUserPosts.forEach((postId) => {
-                getPost(postId, usersData, (post) => {
-                  posts.push(post);
-                  store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
-                });
+    getDoc(userDocRef).then(async (userDoc) => {
+      const followingUsers = userDoc.data().following;
+      followingUsers.forEach((followingUser) => {
+        const followingUserQuery = query(
+          usersCollectionRef,
+          where("uid", "==", followingUser)
+        );
+        getDocs(followingUserQuery).then((followingUserDocs) => {
+          followingUserDocs.forEach((followingUserDoc) => {
+            let followingUserPosts = followingUserDoc.data().userPosts;
+            followingUserPosts.forEach((postId) => {
+              getPost(postId, false, (post) => {
+                posts.push(post);
+                store.dispatch(setPost(JSON.parse(JSON.stringify(posts))));
               });
             });
           });
@@ -251,7 +239,6 @@ export const getFollowingPosts = async (userId, callback) => {
 };
 
 export const getAllPostsFromSpecificUser = async (userId, callback) => {
-  const postsCollectionRef = collection(db, "posts");
   const userDocRef = doc(db, "users", userId);
   try {
     const userDoc = await getDoc(userDocRef);
@@ -295,7 +282,7 @@ export const getPost = (postId, usersData, callback) => {
   getDoc(postDocRef).then((postDoc) => {
     // Store the data of the post
     post = postDoc.data();
-    getCountFromServer(postCommentsCollectionRef).then((number) => {
+    getCountFromServer(postCommentsCollectionRef).then(() => {
       if (post) {
         // Store the id of the post
         post.id = PID;
@@ -415,6 +402,7 @@ export const sendLike = async (userId, postId) => {
         });
       }
     });
+    return result;
   } catch (error) {
     console.log("Could not send like: ", error);
   }
