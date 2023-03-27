@@ -5,6 +5,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { collection, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
+import Loader from "../Loader/Loader";
 
 const Comments = (props) => {
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ const Comments = (props) => {
   return (
     <div className="comment-section-content padding">
       {loading ? (
-        <>Loading..</>
+        <Loader />
       ) : (
         <div ref={commentsRef} className="comments flex fd-c padding">
           {commentss.map((comment, index) => (

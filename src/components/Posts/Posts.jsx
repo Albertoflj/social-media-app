@@ -8,6 +8,7 @@ import "./post.scss";
 
 import Post from "./Post";
 import { useSelector } from "react-redux";
+import Loader from "../Loader/Loader";
 
 const Posts = () => {
   const posts = useSelector((state) => state.post.posts);
@@ -29,7 +30,7 @@ const Posts = () => {
   return (
     <div>
       {loading ? (
-        <h1>Loading...</h1>
+        <Loader />
       ) : (
         <div className="posts flex  fd-c ai-c">
           {posts.map((post, index) => (

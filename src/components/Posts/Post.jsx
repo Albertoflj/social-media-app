@@ -22,6 +22,7 @@ import CommentInput from "../CommentSection/CommentInput";
 import Comments from "../CommentSection/Comments";
 import PostOptions from "../PostOptions/PostOptions";
 import ImageWithPlaceholder from "../ImageWithPlaceholder/ImageWithPlaceholder";
+import Loader from "../Loader/Loader";
 
 const Post = (props) => {
   let feed = props.for;
@@ -122,7 +123,7 @@ const Post = (props) => {
   return (
     <>
       {loading ? (
-        <>Loading...</>
+        <Loader />
       ) : (
         <>
           {postid ? <Header /> : null}

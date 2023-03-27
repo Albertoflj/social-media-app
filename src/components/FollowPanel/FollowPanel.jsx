@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import xIcon from "../../assets/icons/x.svg";
+import Loader from "../Loader/Loader";
 
 const FollowPanel = (props) => {
   const [followingActive, setFollowingActive] = useState(
@@ -100,7 +101,7 @@ const FollowPanel = (props) => {
         </div>
         <div className="follow-list flex fd-c padding">
           {loading ? (
-            <>Loading</>
+            <Loader />
           ) : (
             <>
               {users.map((userProfile) => {

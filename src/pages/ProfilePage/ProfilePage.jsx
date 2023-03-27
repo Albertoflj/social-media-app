@@ -17,6 +17,7 @@ import {
   unfollowUser,
 } from "../../firebase";
 import "./profilepage.scss";
+import Loader from "../../components/Loader/Loader";
 
 const ProfilePage = () => {
   const authUser = useAuthState(auth);
@@ -80,7 +81,7 @@ const ProfilePage = () => {
     <div>
       <Header />
       {loading ? (
-        <>Loading</>
+        <Loader />
       ) : (
         <div className="profile-container flex fd-c ai-c">
           {showFollowPanel && (
